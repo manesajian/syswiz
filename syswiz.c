@@ -24,12 +24,14 @@ struct output {
     int buf_len;
 };
 
-// Fills options structure, returns non-zero on error
+// Fills options structure. Returns zero on error
 int parse_options(struct options *opt, int argc, char **argv);
 
 void handle_output(struct options *opt, struct output *out);
 
-int verify_path(char *path);
+// Verifies existence of path. Adjusts path buffer from relative location
+//  to absolute path if needed. Returns zero on error.
+int verify_path(struct options * opt, char *path);
 
 struct output *find_files(struct options *opt, char *path);
 
@@ -79,10 +81,16 @@ int parse_options(struct options *opt, int argc, char **argv)
     }
 
     if (opt->path_set) {
-        printf("Verifying path ...\n");
-        if (!verify_path(opt->path))
+        if (opt->verbose)
+            printf("Verifying path %s ...\n", opt->path);
+
+        if (!verify_path(opt, opt->path)) {
             printf("Invalid path: %s\n", opt->path);
             return 1;
+        }
+
+        if (opt->verbose)
+            printf("Path is valid.\n");
     }
 
     return 0;
@@ -92,24 +100,42 @@ void handle_output(struct options *opt, struct output *out)
 {
     printf("handle_output()\n");
 
-    printf("OUTPUT: %s", out->buffer);
+    printf("OUTPUT: %s\n", out->buffer);
 
     free(out);
 }
 
-int verify_path(char *path)
+int verify_path(struct options * opt, char *path)
 {
     DIR *dir = opendir(path);
     if (opendir(path)) {
         // path exists
         closedir(dir);
+        return 1;
     }
     else if (errno == ENOENT) {
-        printf("Directory %s does not exist.", path);
+        // try current working directory
+        char *cwd = getcwd(NULL, 0);
+
+        char pathbuf[MAX_PATH_LEN];
+        snprintf(pathbuf, MAX_PATH_LEN, "%s/%s", cwd, path);
+
+        if (opendir(pathbuf)) {
+            if (opt->verbose)
+                printf("Converted path from %s to %s.\n", path, pathbuf);
+
+            // path exists
+            closedir(dir);
+            return 1;
+        }
+
+        printf("Directory %s does not exist.\n", path);
     }
     else {
-        printf("Directory %s could not be accessed.", path);
+        printf("Directory %s could not be accessed.\n", path);
     }
+
+    return 0;
 }
 
 struct output *find_files(struct options *opt, char *path)
@@ -125,7 +151,7 @@ struct output *find_files(struct options *opt, char *path)
     }
 
     if (opt->verbose)
-        printf("Doing chdir(%s) ...", path);
+        printf("Doing chdir(%s) ...\n", path);
 
     chdir(path);
 
