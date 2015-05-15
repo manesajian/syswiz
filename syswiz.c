@@ -98,9 +98,12 @@ int parse_options(struct options *opt, int argc, char **argv)
 
 void handle_output(struct options *opt, struct output *out)
 {
-    printf("handle_output()\n");
-
-    printf("OUTPUT: %s\n", out->buffer);
+    if (opt->find_files_from_inode) {
+        if (out->buf_len == 0)
+            printf("No matches found.");
+        else
+            printf("%s", out->buffer);
+    }
 
     free(out);
 }
@@ -161,7 +164,7 @@ struct output *find_files(struct options *opt, char *path)
 
     while ((entry = readdir(dp)) != NULL) {
         lstat(entry->d_name, &statbuf);
-        if(S_ISDIR(statbuf.st_mode)) {
+        if (S_ISDIR(statbuf.st_mode)) {
             // Ignore . and ..
             if (strcmp(".", entry->d_name) == 0 ||
                 strcmp("..", entry->d_name) == 0)
@@ -169,7 +172,7 @@ struct output *find_files(struct options *opt, char *path)
 
             // check for inode match
             if (statbuf.st_ino == opt->inode) {
-                int bytes = snprintf(out->buffer,
+                int bytes = snprintf(out->buffer + out->buf_len,
                                      MAX_BUF_LEN - out->buf_len,
                                      "%s\n",
                                      entry->d_name);
@@ -182,11 +185,14 @@ struct output *find_files(struct options *opt, char *path)
         else {
             // check for inode match
             if (statbuf.st_ino == opt->inode) {
-                int bytes = snprintf(out->buffer,
+                int bytes = snprintf(out->buffer + out->buf_len,
                                      MAX_BUF_LEN - out->buf_len,
                                      "%s\n",
                                      entry->d_name);
                 out->buf_len += bytes;
+
+                if (opt->verbose)
+                    printf("Found inode match: %s\n", entry->d_name);
             } 
         }
     }
