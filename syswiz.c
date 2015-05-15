@@ -4,9 +4,12 @@
 #include <errno.h>
 #include <getopt.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define MAX_PATH_LEN    2048
+#define MAX_BUF_LEN     8192
 
 struct options {
     int find_files_from_inode;
@@ -17,7 +20,8 @@ struct options {
 };
 
 struct output {
-
+    char buffer[MAX_BUF_LEN];
+    int buf_len;
 };
 
 // Fills options structure, returns non-zero on error
@@ -31,19 +35,20 @@ struct output *find_files(struct options *opt, char *path);
 
 int main(int argc, char **argv)
 {
+    // Place command-line arguments into options structure
     struct options opt;
-    struct output out;
     if (parse_options(&opt, argc, argv)) {
         return 1;
     } 
 
+    // Prints files matching inode number and descending from path
     if (opt.find_files_from_inode)
         handle_output(&opt, find_files(&opt, opt.path));
 
     return 0;
 }
 
-const char usage[] = "Usage: syswiz [-i inode] [-p path] [-v]";
+const char usage[] = "Usage: syswiz [-h] [-i inode] [-p path] [-v]";
 
 int parse_options(struct options *opt, int argc, char **argv)
 {
@@ -51,7 +56,7 @@ int parse_options(struct options *opt, int argc, char **argv)
     memset(opt, 0, sizeof(struct options));
 
     char c;
-    while ((c = getopt (argc, argv, "i:p:v")) != -1) {
+    while ((c = getopt (argc, argv, "hi:p:v")) != -1) {
         switch (c) {
             case 'i':
                 opt->find_files_from_inode = 1;
@@ -68,13 +73,13 @@ int parse_options(struct options *opt, int argc, char **argv)
                 opt->verbose = 1;
                 break;
            default:
-                printf("Unrecognized arg: %c\n", c);
+                fprintf(stderr, "Unrecognized arg: %c\n", c);
                 return 1;
        }
     }
 
     if (opt->path_set) {
-        printf("Verifying path ...");
+        printf("Verifying path ...\n");
         if (!verify_path(opt->path))
             printf("Invalid path: %s\n", opt->path);
             return 1;
@@ -86,6 +91,10 @@ int parse_options(struct options *opt, int argc, char **argv)
 void handle_output(struct options *opt, struct output *out)
 {
     printf("handle_output()\n");
+
+    printf("OUTPUT: %s", out->buffer);
+
+    free(out);
 }
 
 int verify_path(char *path)
@@ -108,32 +117,57 @@ struct output *find_files(struct options *opt, char *path)
     DIR *dp;
     struct dirent *entry;
     struct stat statbuf;
+    struct output *out;
 
     if ((dp = opendir(path)) == NULL) {
         fprintf(stderr,"cannot open directory: %s\n", path);
         return;
     }
 
+    if (opt->verbose)
+        printf("Doing chdir(%s) ...", path);
+
     chdir(path);
+
+    // Allocate and initialize output structure
+    out = malloc(sizeof(struct output));
+    memset(out, 0, sizeof(struct output));
 
     while ((entry = readdir(dp)) != NULL) {
         lstat(entry->d_name, &statbuf);
         if(S_ISDIR(statbuf.st_mode)) {
             // Ignore . and ..
-            if(strcmp(".", entry->d_name) == 0 ||
-               strcmp("..", entry->d_name) == 0)
+            if (strcmp(".", entry->d_name) == 0 ||
+                strcmp("..", entry->d_name) == 0)
                 continue;
+
+            // check for inode match
+            if (statbuf.st_ino == opt->inode) {
+                int bytes = snprintf(out->buffer,
+                                     MAX_BUF_LEN - out->buf_len,
+                                     "%s\n",
+                                     entry->d_name);
+                out->buf_len += bytes;
+            } 
 
             // Recurse
             find_files(opt, entry->d_name);
         }
         else {
-            // Handle file
-            //entry->d_name ...
+            // check for inode match
+            if (statbuf.st_ino == opt->inode) {
+                int bytes = snprintf(out->buffer,
+                                     MAX_BUF_LEN - out->buf_len,
+                                     "%s\n",
+                                     entry->d_name);
+                out->buf_len += bytes;
+            } 
         }
     }
 
     chdir("..");
     closedir(dp);
+
+    return out;
 }
 
