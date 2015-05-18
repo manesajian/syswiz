@@ -50,7 +50,16 @@ int main(int argc, char **argv)
     return 0;
 }
 
-const char usage[] = "Usage: syswiz [-h] [-i inode] [-p path] [-v]";
+const char usage[] = "Usage: syswiz ([-h] | [-i|-f *]) [-v]";
+
+# TODO: current changes involve finding a reasonable root dir for -i search.
+#  Can start with cwd, but then should find highest user-allowed parent of
+#  cwd if the 1st search doesn't find the inode.
+# Paths on the other hand can just be either absolute or relative to cwd.
+
+# TODO: also changes are going to result in more information display.
+#  For -i, it should list all hard-links as well as stat on the inode
+#  For -f, it should just list the stat
 
 int parse_options(struct options *opt, int argc, char **argv)
 {
@@ -58,18 +67,28 @@ int parse_options(struct options *opt, int argc, char **argv)
     memset(opt, 0, sizeof(struct options));
 
     char c;
-    while ((c = getopt (argc, argv, "hi:p:v")) != -1) {
+    while ((c = getopt (argc, argv, "f:hi:v")) != -1) {
         switch (c) {
-            case 'i':
-                opt->find_files_from_inode = 1;
-                opt->inode = atoi(optarg);
+            case 'f':
+                if (opt->find_files_from_inode) {
+                    fprintf(stderr, "Incompatible options -i and -f.");
+                    return 1;
+                }
+
+                opt->path_set = 1;
+                strncpy(opt->path, optarg, strlen(optarg));
                 break;
             case 'h':
                 printf("%s\n", usage);
                 break;
-            case 'p':
-                opt->path_set = 1;
-                strncpy(opt->path, optarg, strlen(optarg));
+            case 'i':
+                if (opt->path_set) {
+                    fprintf(stderr, "Incompatible options -f and -i.");
+                    return 1;
+                }
+
+                opt->find_files_from_inode = 1;
+                opt->inode = atoi(optarg);
                 break;
             case 'v':
                 opt->verbose = 1;
@@ -202,4 +221,34 @@ struct output *find_files(struct options *opt, char *path)
 
     return out;
 }
+
+// TODO: add to interface, so command can be approached from a file name
+//  rather than inode.
+// syswiz -f file
+//  information about the file
+//  if hardlinked, auto-searching for other fs locations
+//  ...
+//  eventually some kind of top-like dynamic view following file changes?
+//   tail -f + stat + top ?
+
+// TODO: invoking syswiz with no arguments should start an interactive system.
+//  So syswiz can be used either as a single-execution command fitting with
+//  the UNIX pipeline model or it can be used as an interactive system
+//  diagnosic.
+// Slightly ambitious, but if the basic double-structure is put in place, then
+//  this could serve as a good place to put utility routines as they're
+//  acquired.
+// I suppose the tricky part here is to handle updating changes in displayed
+//  information during interactive mode. So each command has to work with a
+//  similar output structure so it can be appropriately formated.
+
+// TODO: from a design standpoint, what about basing the interface around the
+//  concept of identifying a single interesting starting structure?
+
+// A file, an inode, a process, a network port, a network connection, and so
+//  on ...
+
+// Perhaps the interactive mode involves combining streams of these target-
+//  oriented commands.
+
 
