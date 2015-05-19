@@ -145,32 +145,25 @@ void handle_output(struct options *opt, struct output *out)
 
 int verify_path(struct options * opt, char *path)
 {
-    DIR *dir = opendir(path);
-    if (opendir(path)) {
-        // path exists
-        closedir(dir);
+    // Check if path is accessible
+    if (access(path, F_OK) != -1)
         return 1;
-    } else if (errno == ENOENT) {
-        // try current working directory
-        char *cwd = getcwd(NULL, 0);
 
-        char pathbuf[MAX_PATH_LEN];
-        snprintf(pathbuf, MAX_PATH_LEN, "%s/%s", cwd, path);
+    // Try path based on current working directory
+    char *cwd = getcwd(NULL, 0);
 
-        if (opendir(pathbuf)) {
-            if (opt->verbose)
-                printf("Converted path from %s to %s.\n", path, pathbuf);
+    char pathbuf[MAX_PATH_LEN];
+    snprintf(pathbuf, MAX_PATH_LEN, "%s/%s", cwd, path);
 
-            // path exists
-            closedir(dir);
-            return 1;
-        }
+    if (opt->verbose)
+        printf("Verifying %s ...\n", pathbuf);
 
-        printf("Directory %s does not exist.\n", path);
-    } else {
-        printf("Directory %s could not be accessed.\n", path);
+    // Check if cwd/path is accessible
+    if (access(pathbuf, F_OK) != -1 ) {
+        return 1;
     }
 
+    // Could not access path
     return 0;
 }
 
@@ -244,9 +237,6 @@ struct output *find_files(struct options *opt, char *path)
 
         opt->inode = st.st_ino;
     }
-
-    if (opt->verbose)
-        printf("Doing chdir(%s) ...\n", path);
 
     chdir(path);
 
