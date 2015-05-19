@@ -12,11 +12,12 @@
 #define MAX_BUF_LEN     8192
 
 struct options {
-    int find_files_from_inode;
-    int inode;
-    int path_set;
-    char path[MAX_PATH_LEN];
     int verbose;
+    int file_set;
+    int path_set;
+    int inode;
+    char file[MAX_PATH_LEN];
+    char path[MAX_PATH_LEN];
 };
 
 struct output {
@@ -27,11 +28,15 @@ struct output {
 // Fills options structure. Returns zero on error
 int parse_options(struct options *opt, int argc, char **argv);
 
+// Outputs and frees output struct
 void handle_output(struct options *opt, struct output *out);
 
 // Verifies existence of path. Adjusts path buffer from relative location
 //  to absolute path if needed. Returns zero on error.
 int verify_path(struct options * opt, char *path);
+
+// Prepares stat struct for output
+struct output *format_stat(struct options *opt, struct stat *st);
 
 struct output *find_files(struct options *opt, char *path);
 
@@ -43,23 +48,41 @@ int main(int argc, char **argv)
         return 1;
     } 
 
-    // Prints files matching inode number and descending from path
-    if (opt.find_files_from_inode)
-        handle_output(&opt, find_files(&opt, opt.path));
+    if (opt.file_set) {
+        struct stat st;
+        if (stat(opt.file, &st) == -1) {
+            fprintf(stderr, "could not stat file: %s\n", opt.file);
+            return 1;
+        }
+
+        // Remember file inode
+        opt.inode = st.st_ino;
+
+        struct output *out;
+        if (opt.path_set) {
+            out = find_files(&opt, opt.path);
+        }
+        else {
+            // Default to cwd for search path
+            char *cwd = getcwd(NULL, 0);
+            out = find_files(&opt, cwd);
+            free(cwd);
+        }
+
+        // Output all known hard-linked versions of file
+        handle_output(&opt, out);
+
+        // Output stat(file)
+        handle_output(&opt, format_stat(&opt, &st));
+
+// TODO: don't forget to detect when there are hard-linked version that are
+//  unknown in location
+    }
 
     return 0;
 }
 
-const char usage[] = "Usage: syswiz ([-h] | [-i|-f *]) [-v]";
-
-# TODO: current changes involve finding a reasonable root dir for -i search.
-#  Can start with cwd, but then should find highest user-allowed parent of
-#  cwd if the 1st search doesn't find the inode.
-# Paths on the other hand can just be either absolute or relative to cwd.
-
-# TODO: also changes are going to result in more information display.
-#  For -i, it should list all hard-links as well as stat on the inode
-#  For -f, it should just list the stat
+const char usage[] = "Usage: syswiz [-f *] [-h] [-p] [-v]";
 
 int parse_options(struct options *opt, int argc, char **argv)
 {
@@ -67,28 +90,18 @@ int parse_options(struct options *opt, int argc, char **argv)
     memset(opt, 0, sizeof(struct options));
 
     char c;
-    while ((c = getopt (argc, argv, "f:hi:v")) != -1) {
+    while ((c = getopt (argc, argv, "f:hp:v")) != -1) {
         switch (c) {
             case 'f':
-                if (opt->find_files_from_inode) {
-                    fprintf(stderr, "Incompatible options -i and -f.");
-                    return 1;
-                }
-
-                opt->path_set = 1;
-                strncpy(opt->path, optarg, strlen(optarg));
+                opt->file_set = 1;
+                strncpy(opt->file, optarg, strlen(optarg));
                 break;
             case 'h':
                 printf("%s\n", usage);
                 break;
-            case 'i':
-                if (opt->path_set) {
-                    fprintf(stderr, "Incompatible options -f and -i.");
-                    return 1;
-                }
-
-                opt->find_files_from_inode = 1;
-                opt->inode = atoi(optarg);
+            case 'p':
+                opt->path_set = 1;
+                strncpy(opt->path, optarg, strlen(optarg));
                 break;
             case 'v':
                 opt->verbose = 1;
@@ -99,17 +112,18 @@ int parse_options(struct options *opt, int argc, char **argv)
        }
     }
 
-    if (opt->path_set) {
-        if (opt->verbose)
-            printf("Verifying path %s ...\n", opt->path);
+    if (opt->file_set) {
+        if (!verify_path(opt, opt->file)) {
+            printf("Invalid file: %s\n", opt->file);
+            return 1;
+        }
+    }
 
+    if (opt->path_set) {
         if (!verify_path(opt, opt->path)) {
             printf("Invalid path: %s\n", opt->path);
             return 1;
         }
-
-        if (opt->verbose)
-            printf("Path is valid.\n");
     }
 
     return 0;
@@ -117,12 +131,10 @@ int parse_options(struct options *opt, int argc, char **argv)
 
 void handle_output(struct options *opt, struct output *out)
 {
-    if (opt->find_files_from_inode) {
-        if (out->buf_len == 0)
-            printf("No matches found.");
-        else
-            printf("%s", out->buffer);
-    }
+    if (out == NULL)
+        return;
+
+    printf("%s", out->buffer);
 
     free(out);
 }
@@ -160,16 +172,75 @@ int verify_path(struct options * opt, char *path)
     return 0;
 }
 
+/*
+ * Prepares stat struct for output
+ */
+struct output *format_stat(struct options *opt, struct stat *st)
+{
+    struct output *out;
+
+    // Allocate and initialize output structure
+    out = malloc(sizeof(struct output));
+    memset(out, 0, sizeof(struct output));
+
+    int bytes = snprintf(out->buffer,
+                         MAX_BUF_LEN,
+                         "  on device: %i\n"
+                         "      inode: %i\n"
+                         " protection: %i\n"
+                         " hard links: %i\n"
+                         "       user: %i\n"
+                         "      group: %i\n"
+                         "  is device: %i\n"
+                         " total size: %i\n"
+                         " block size: %i\n"
+                         "     blocks: %i\n"
+                         "last access: %i\n"
+                         "last modify: %i\n"
+                         "last change: %i\n",
+                         (int)st->st_dev,
+                         (int)st->st_ino,
+                         (int)st->st_mode,
+                         (int)st->st_nlink,
+                         (int)st->st_uid,
+                         (int)st->st_gid,
+                         (int)st->st_rdev,
+                         (int)st->st_size,
+                         (int)st->st_blksize,
+                         (int)st->st_blocks,
+                         (int)st->st_atime,
+                         (int)st->st_mtime,
+                         (int)st->st_ctime);
+
+    out->buf_len += bytes;
+}
+
+/*
+ * Recurses to search path for all files matching opt->inode
+ */
 struct output *find_files(struct options *opt, char *path)
 {
     DIR *dp;
     struct dirent *entry;
-    struct stat statbuf;
+    struct stat st;
     struct output *out;
 
     if ((dp = opendir(path)) == NULL) {
-        fprintf(stderr,"cannot open directory: %s\n", path);
-        return;
+        fprintf(stderr, "cannot open directory: %s\n", path);
+        return NULL;
+    }
+
+    // Fill in inode if needed
+    if (!opt->inode) {
+        if (opt->verbose)
+            printf("Doing stat(%s) ...\n", opt->file);
+
+        if (stat(opt->file, &st) == -1) {
+            fprintf(stderr, "could not stat file: %s\n", opt->file);
+            return NULL;
+        }
+
+        opt->inode = st.st_ino;
     }
 
     if (opt->verbose)
@@ -182,15 +253,15 @@ struct output *find_files(struct options *opt, char *path)
     memset(out, 0, sizeof(struct output));
 
     while ((entry = readdir(dp)) != NULL) {
-        lstat(entry->d_name, &statbuf);
-        if (S_ISDIR(statbuf.st_mode)) {
+        lstat(entry->d_name, &st);
+        if (S_ISDIR(st.st_mode)) {
             // Ignore . and ..
             if (strcmp(".", entry->d_name) == 0 ||
                 strcmp("..", entry->d_name) == 0)
                 continue;
 
             // check for inode match
-            if (statbuf.st_ino == opt->inode) {
+            if (st.st_ino == opt->inode) {
                 int bytes = snprintf(out->buffer + out->buf_len,
                                      MAX_BUF_LEN - out->buf_len,
                                      "%s\n",
@@ -203,7 +274,7 @@ struct output *find_files(struct options *opt, char *path)
         }
         else {
             // check for inode match
-            if (statbuf.st_ino == opt->inode) {
+            if (st.st_ino == opt->inode) {
                 int bytes = snprintf(out->buffer + out->buf_len,
                                      MAX_BUF_LEN - out->buf_len,
                                      "%s\n",
