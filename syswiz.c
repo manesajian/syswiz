@@ -61,8 +61,7 @@ int main(int argc, char **argv)
         struct output *out;
         if (opt.path_set) {
             out = find_files(&opt, opt.path);
-        }
-        else {
+        } else {
             // Default to cwd for search path
             char *cwd = getcwd(NULL, 0);
             out = find_files(&opt, cwd);
@@ -151,8 +150,7 @@ int verify_path(struct options * opt, char *path)
         // path exists
         closedir(dir);
         return 1;
-    }
-    else if (errno == ENOENT) {
+    } else if (errno == ENOENT) {
         // try current working directory
         char *cwd = getcwd(NULL, 0);
 
@@ -169,8 +167,7 @@ int verify_path(struct options * opt, char *path)
         }
 
         printf("Directory %s does not exist.\n", path);
-    }
-    else {
+    } else {
         printf("Directory %s could not be accessed.\n", path);
     }
 
@@ -276,8 +273,7 @@ struct output *find_files(struct options *opt, char *path)
 
             // Recurse
             find_files(opt, entry->d_name);
-        }
-        else {
+        } else {
             // check for inode match
             if (st.st_ino == opt->inode) {
                 int bytes = snprintf(out->buffer + out->buf_len,
