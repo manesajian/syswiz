@@ -89,6 +89,11 @@ int parse_options(struct options *opt, int argc, char **argv)
     // Initialize options
     memset(opt, 0, sizeof(struct options));
 
+    if (argc == 1) {
+        printf("%s\n", usage);
+        return 1;
+    }
+
     char c;
     while ((c = getopt (argc, argv, "f:hp:v")) != -1) {
         switch (c) {
