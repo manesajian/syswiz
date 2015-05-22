@@ -28,7 +28,7 @@ struct output {
 // Fills options structure. Returns zero on error
 int parse_options(struct options *opt, int argc, char **argv);
 
-// Outputs and frees output struct
+// Displays and frees output struct
 void handle_output(struct options *opt, struct output *out);
 
 // Verifies existence of path. Adjusts path buffer from relative location
