@@ -313,4 +313,5 @@ struct output *find_files(struct options *opt, char *path)
 // Perhaps the interactive mode involves combining streams of these target-
 //  oriented commands.
 
-
+// Need to start putting in some handling for special files.
+// Or how about something like a tail -f for metadata?
