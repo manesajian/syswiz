@@ -169,9 +169,19 @@ void move_llnode_down(llist *ll, llnode *node)
 
 void del_llnode(llist *ll, llnode *node)
 {
+    if (node->prev)
+        node->prev->next = node->next;
+    else
+        ll->head = node->next;
 
+    if (node->next)
+        node->next->prev = node->prev;
+    else
+        ll->tail = node->prev;
 
+    ll->count -= 1;
 
+    free(node);
 }
 
 int main(int argc, char *argv[])
