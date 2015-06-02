@@ -2,32 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct llnode llnode;
-typedef struct llist llist;
-
-typedef struct llnode
-{
-    llnode *prev;
-    llnode *next;
-    void *data;
-} llnode;
-
-typedef struct llist
-{
-    llnode *head;
-    llnode *tail;
-    int count;
-} llist;
-
-llist *get_llist();
-void free_llist(llist *ll);
-void add_llnode(llist *ll, llnode *node);
-void add_llnode_head(llist *ll, llnode *node);
-void add_llnode_before(llist *ll, llnode *cur, llnode *new);
-void add_llnode_after(llist *ll, llnode *cur, llnode *new);
-void move_llnode_up(llist *ll, llnode *node);
-void move_llnode_down(llist *ll, llnode *node);
-void del_llnode(llist *ll, llnode *node);
+#include "llist.h"
 
 llist *get_llist()
 { 
@@ -182,46 +157,4 @@ void del_llnode(llist *ll, llnode *node)
     ll->count -= 1;
 
     free(node);
-}
-
-typedef struct test_st test_st;
-
-typedef struct test_st
-{
-    llnode hdr;
-    int val;
-} test_st;
-
-int main(int argc, char *argv[])
-{
-    llist *ll = NULL;
-    ll = malloc(sizeof(llist));
-    memset(ll, 0, 0);
-
-    printf("Allocating list ...\n");
-    ll = malloc(sizeof(llist));
-    memset(ll, 0, 0);
-
-    printf("Initializing list ...\n");
-
-    int i;
-    for (i = 0; i < 5; ++i) {
-        test_st *node = malloc(sizeof(test_st));
-        node->val = i;
-        printf("\tAdding element val %i ...\n", node->val);
-        add_llnode(ll, (llnode *)node);
-    }
-
-    printf("Freeing list ...\n");
-
-    while (ll->count) {
-        printf("\tFreeing element val %i ...\n", ((test_st *)(ll->head))->val);
-        del_llnode(ll, ll->head);
-    }
-
-    free_llist(ll);
-
-    printf("Completed.\n");
-
-    return 0;
 }
