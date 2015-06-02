@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "linkedlist.h"
 
 typedef struct test_st test_st;
 

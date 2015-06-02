@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "llist.h"
+#include "linkedlist.h"
 
 llist *get_llist()
 { 
