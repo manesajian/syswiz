@@ -52,17 +52,31 @@ void add_item(htable *ht, char *key, void *value)
 
     llist *bucket = ht->keys[key];
     if (bucket == NULL)
-        ht->keys[key] = bucket = get_llist();
+        bucket = ht->keys[key] = get_llist();
 
-    llnode *node = malloc(sizeof(llnode));
-    node->data = value;
+    htnode *node = malloc(sizeof(htnode) + strnlen(key, HT_MAX_KEY_LEN));
+    node->elem->data = value;
+    strncpy(node->key, key, HT_MAX_KEY_LEN);
+    node->key[HT_MAX_KEY_LEN] = 0;
 
     add_llnode_head(bucket, node);
 }
 
 void get_item(htable *ht, char *key)
 {
+    unsigned long key = hash_key(ht, key);
 
+    llist *bucket = ht->keys[key];
+    if (bucket == NULL)
+        return NULL;
+
+    htnode *node = bucket->head;
+    while (node) {
+        if (!strncmp(key, node->key, HT_MAX_KEY_LEN))
+            break;
+        node = node->elem->next;
+    }
+    return node;
 }
 
 void del_item(htable *ht, char *key)
