@@ -4,8 +4,8 @@
 
 typedef struct htnode
 {
-    llnode node;
-    char *key;
+    llnode elem;
+    char **key;
 } htnode;
 
 typedef struct htable
