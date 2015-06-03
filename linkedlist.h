@@ -1,5 +1,5 @@
 #ifndef INCLUDED_LINKEDLIST_H
-#define INCLUDE_LINKEDLIST_H
+#define INCLUDED_LINKEDLIST_H
 
 typedef struct llnode llnode;
 typedef struct llist llist;

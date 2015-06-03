@@ -1,5 +1,5 @@
 #ifndef INCLUDED_HASHTABLE_H
-#define INCLUDE_HASHTABLE_H
+#define INCLUDED_HASHTABLE_H
 
 #include "linkedlist.h"
 
