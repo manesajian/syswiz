@@ -6,7 +6,6 @@ typedef struct htable
 {
     llist **keys;
     int buckets;
-    int count;
 } htable;
 
 htable *get_htable(int buckets);

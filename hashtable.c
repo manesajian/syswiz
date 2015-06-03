@@ -12,17 +12,26 @@ htable *get_htable(int buckets)
     ht->keys = malloc(keys_size)
     memset(ht->keys, 0, keys_size);
     ht->buckets = buckets;
-    ht->count = 0;
 }
 
 void free_htable(htable *ht)
 {
-    int i;
-    llist *bucket;
-    for (i = 0, bucket = ht->keys; i < ht->buckets; ++i, ++bucket)
+    int i = 0;
+    llist *bucket = ht->keys;
+    for (; i < ht->buckets; ++i, ++bucket)
         free_llist(bucket);
     free(ht->keys);
     free(ht);
+}
+
+unsigned long htable_count(htable *ht)
+{
+    int sum = 0;
+    int i = 0;
+    llist *bucket = ht->keys;
+    for (; i < ht->buckets; ++i, ++bucket)
+        sum += bucket->count;
+    return sum;
 }
 
 // djb2 by dan bernstein
@@ -39,7 +48,16 @@ unsigned long hash_key(htable *ht, unsigned char *key)
 
 void add_item(htable *ht, char *key, void *value)
 {
+    unsigned long key = hash_key(ht, key);
 
+    llist *bucket = ht->keys[key];
+    if (bucket == NULL)
+        ht->keys[key] = bucket = get_llist();
+
+    llnode *node = malloc(sizeof(llnode));
+    node->data = value;
+
+    add_llnode_head(bucket, node);
 }
 
 void del_item(htable *ht, char *key)
