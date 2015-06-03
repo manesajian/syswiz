@@ -17,11 +17,12 @@ htable *get_htable(int buckets)
 
 void free_htable(htable *ht)
 {
-    while (ll->head) {
-        del_llnode(ll, ll->head);
-    }
-
-    free(ll);
+    int i;
+    llist *bucket;
+    for (i = 0, bucket = ht->keys; i < ht->buckets; ++i, ++bucket)
+        free_llist(bucket);
+    free(ht->keys);
+    free(ht);
 }
 
 // djb2 by dan bernstein
