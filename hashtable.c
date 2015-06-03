@@ -4,11 +4,15 @@
 
 #include "hashtable.h"
 
-htable *get_htable()
+htable *get_htable(int buckets)
 { 
-    llist *ll = malloc(sizeof(llist));
-    memset(ll, 0, 0);
-    return ll;
+    htable *ht = malloc(sizeof(htable));
+    memset(ht, 0, 0);
+    keys_size = buckets * sizeof(llist *);
+    ht->keys = malloc(keys_size)
+    memset(ht->keys, 0, keys_size);
+    ht->buckets = buckets;
+    ht->count = 0;
 }
 
 void free_htable(htable *ht)
