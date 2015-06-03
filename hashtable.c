@@ -24,7 +24,7 @@ void free_htable(htable *ht)
     free(ht);
 }
 
-unsigned long htable_count(htable *ht)
+unsigned long count_htable(htable *ht)
 {
     int sum = 0;
     int i = 0;
