@@ -20,6 +20,18 @@ void free_htable(htable *ht)
     free(ll);
 }
 
+// djb2 by dan bernstein
+unsigned long hash_key(htable *ht, unsigned char *key)
+{
+    unsigned long hash = 5381;
+    int c;
+
+    while (c = *str++)
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+    return hash;
+}
+
 void add_item(htable *ht, char *key, void *value)
 {
 

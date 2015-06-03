@@ -10,6 +10,6 @@ typedef struct htable
 
 htable *get_htable();
 void free_htable(htable *ht);
-
+unsigned long hash_key(htable *ht, unsigned char *key);
 void add_item(htable *ht, char *key, void *value);
 void del_item(htable *ht, char *key);
