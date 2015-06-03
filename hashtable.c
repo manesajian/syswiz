@@ -60,7 +60,16 @@ void add_item(htable *ht, char *key, void *value)
     add_llnode_head(bucket, node);
 }
 
+void get_item(htable *ht, char *key)
+{
+
+}
+
 void del_item(htable *ht, char *key)
 {
+//    unsigned long key = hash_key(ht, key);
+
+//    llist *bucket = ht->keys[key];
+//    if (bucket == NULL)
 
 }
