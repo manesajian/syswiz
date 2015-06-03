@@ -81,9 +81,19 @@ void get_item(htable *ht, char *key)
 
 void del_item(htable *ht, char *key)
 {
-//    unsigned long key = hash_key(ht, key);
+    unsigned long key = hash_key(ht, key);
 
-//    llist *bucket = ht->keys[key];
-//    if (bucket == NULL)
+    llist *bucket = ht->keys[key];
+    if (bucket == NULL)
+        return;
 
+    htnode *node = bucket->head;
+    while (node) {
+        if (!strncmp(key, node->key, HT_MAX_KEY_LEN))
+            break;
+        node = node->elem->next;
+    }
+
+    if (node)
+        free_llnode(bucket, node);
 }
