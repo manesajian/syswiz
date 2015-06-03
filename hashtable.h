@@ -4,11 +4,12 @@
 
 typedef struct htable
 {
-    llist *keys[NUM_BUCKETS];
+    llist **keys;
+    int buckets;
     int count;
 } htable;
 
-htable *get_htable();
+htable *get_htable(int buckets);
 void free_htable(htable *ht);
 unsigned long hash_key(htable *ht, unsigned char *key);
 void add_item(htable *ht, char *key, void *value);
