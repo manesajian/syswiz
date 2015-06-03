@@ -1,3 +1,6 @@
+#ifndef INCLUDED_LINKEDLIST_H
+#define INCLUDE_LINKEDLIST_H
+
 typedef struct llnode llnode;
 typedef struct llist llist;
 
@@ -24,3 +27,5 @@ void add_llnode_after(llist *ll, llnode *cur, llnode *new);
 void move_llnode_up(llist *ll, llnode *node);
 void move_llnode_down(llist *ll, llnode *node);
 void del_llnode(llist *ll, llnode *node);
+
+#endif

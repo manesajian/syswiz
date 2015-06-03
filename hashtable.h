@@ -1,4 +1,7 @@
-#include <linkedlist.h>
+#ifndef INCLUDED_HASHTABLE_H
+#define INCLUDE_HASHTABLE_H
+
+#include "linkedlist.h"
 
 #define HT_MAX_KEY_LEN 1024
 
@@ -23,3 +26,5 @@ unsigned long hash_key(htable *ht, unsigned char *key);
 void add_item(htable *ht, char *key, void *value);
 void get_item(htable *ht, char *key);
 void del_item(htable *ht, char *key);
+
+#endif
