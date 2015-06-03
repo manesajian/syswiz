@@ -1,12 +1,20 @@
 #include <linkedlist.h>
 
-#define NUM_BUCKETS 65536
+#define HT_MAX_KEY_LEN 1024
+
+typedef struct htnode
+{
+    llnode node;
+    char *key;
+} htnode;
 
 typedef struct htable
 {
     llist **keys;
     int buckets;
 } htable;
+
+typedef struct ht
 
 htable *get_htable(int buckets);
 unsigned long count_htable(htable *ht);
