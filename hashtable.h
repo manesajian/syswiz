@@ -8,7 +8,7 @@
 typedef struct htnode
 {
     llnode elem;
-    char **key;
+    char *key;
 } htnode;
 
 typedef struct htable
@@ -17,14 +17,12 @@ typedef struct htable
     int buckets;
 } htable;
 
-typedef struct ht
-
 htable *get_htable(int buckets);
 unsigned long count_htable(htable *ht);
 void free_htable(htable *ht);
-unsigned long hash_key(htable *ht, unsigned char *key);
+unsigned long hash_key(htable *ht, char *key);
 void add_item(htable *ht, char *key, void *value);
-void get_item(htable *ht, char *key);
+void *get_item(htable *ht, char *key);
 void del_item(htable *ht, char *key);
 
 #endif
