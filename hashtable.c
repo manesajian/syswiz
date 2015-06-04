@@ -8,16 +8,17 @@ htable *get_htable(int buckets)
 { 
     htable *ht = malloc(sizeof(htable));
     memset(ht, 0, 0);
-    keys_size = buckets * sizeof(llist *);
-    ht->keys = malloc(keys_size)
+    int keys_size = buckets * sizeof(llist *);
+    ht->keys = malloc(keys_size);
     memset(ht->keys, 0, keys_size);
     ht->buckets = buckets;
+    return ht;
 }
 
 void free_htable(htable *ht)
 {
     int i = 0;
-    llist *bucket = ht->keys;
+    llist *bucket = ht->keys[0];
     for (; i < ht->buckets; ++i, ++bucket)
         free_llist(bucket);
     free(ht->keys);
@@ -28,19 +29,19 @@ unsigned long count_htable(htable *ht)
 {
     int sum = 0;
     int i = 0;
-    llist *bucket = ht->keys;
+    llist *bucket = ht->keys[0];
     for (; i < ht->buckets; ++i, ++bucket)
         sum += bucket->count;
     return sum;
 }
 
 // djb2 by dan bernstein
-unsigned long hash_key(htable *ht, unsigned char *key)
+unsigned long hash_key(htable *ht, char *str)
 {
     unsigned long hash = 5381;
     int c;
 
-    while (c = *str++)
+    while ((c = *str++))
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
     return hash;
@@ -48,52 +49,52 @@ unsigned long hash_key(htable *ht, unsigned char *key)
 
 void add_item(htable *ht, char *key, void *value)
 {
-    unsigned long key = hash_key(ht, key);
+    unsigned long hash = hash_key(ht, key);
 
-    llist *bucket = ht->keys[key];
+    llist *bucket = ht->keys[hash];
     if (bucket == NULL)
-        bucket = ht->keys[key] = get_llist();
+        bucket = ht->keys[hash] = get_llist();
 
     htnode *node = malloc(sizeof(htnode) + strnlen(key, HT_MAX_KEY_LEN));
-    node->elem->data = value;
+    node->elem.data = value;
     strncpy(node->key, key, HT_MAX_KEY_LEN);
     node->key[HT_MAX_KEY_LEN] = 0;
 
-    add_llnode_head(bucket, node);
+    add_llnode_head(bucket, (llnode *)node);
 }
 
-void get_item(htable *ht, char *key)
+void *get_item(htable *ht, char *key)
 {
-    unsigned long key = hash_key(ht, key);
+    unsigned long hash = hash_key(ht, key);
 
-    llist *bucket = ht->keys[key];
+    llist *bucket = ht->keys[hash];
     if (bucket == NULL)
         return NULL;
 
-    htnode *node = bucket->head;
+    llnode *node = bucket->head;
     while (node) {
-        if (!strncmp(key, node->key, HT_MAX_KEY_LEN))
+        if (!strncmp(key, ((htnode *)node)->key, HT_MAX_KEY_LEN))
             break;
-        node = node->elem->next;
+        node = node->next;
     }
     return node;
 }
 
 void del_item(htable *ht, char *key)
 {
-    unsigned long key = hash_key(ht, key);
+    unsigned long hash = hash_key(ht, key);
 
-    llist *bucket = ht->keys[key];
+    llist *bucket = ht->keys[hash];
     if (bucket == NULL)
         return;
 
-    htnode *node = bucket->head;
+    llnode *node = bucket->head;
     while (node) {
-        if (!strncmp(key, node->key, HT_MAX_KEY_LEN))
+        if (!strncmp(key, ((htnode *)node)->key, HT_MAX_KEY_LEN))
             break;
-        node = node->elem->next;
+        node = node->next;
     }
 
     if (node)
-        free_llnode(bucket, node);
+        del_llnode(bucket, node);
 }
