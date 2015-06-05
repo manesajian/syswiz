@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "hashtable.h"
 #include "linkedlist.h"
 
 typedef struct test_st test_st;
@@ -40,6 +41,20 @@ int main(int argc, char *argv[])
     }
 
     free_llist(ll);
+
+    printf("Allocating hashtable ...\n");
+    htable *ht = get_htable(65536);
+
+    printf("Populating hashtable with 1000000 elements ...\n");
+    for (i = 0; i < 1000000; ++i) {
+        char key[HT_MAX_KEY_LEN];
+        snprintf(key, HT_MAX_KEY_LEN, "%i", i + 1);
+        void *value = malloc(128);
+        add_item(ht, key, value);
+    }
+
+    printf("Freeing hashtable ...\n");
+    free_htable(ht); 
 
     printf("Completed.\n");
 
