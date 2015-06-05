@@ -156,5 +156,6 @@ void del_llnode(llist *ll, llnode *node)
 
     ll->count -= 1;
 
+    free(node->data);
     free(node);
 }
