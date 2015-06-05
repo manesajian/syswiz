@@ -62,9 +62,9 @@ void add_item(htable *ht, char *key, void *value)
     node->elem.data = value;
     printf("MarkD\n");
 
-    strncpy(&(node->key), key, HT_MAX_KEY_LEN);
+    strncpy(node->key, key, HT_MAX_KEY_LEN);
     printf("MarkE\n");
-    node->key[HT_MAX_KEY_LEN] = 0;
+    node->key[HT_MAX_KEY_LEN - 1] = 0;
     printf("MarkF\n");
 
     add_llnode_head(bucket, (llnode *)node);
@@ -80,7 +80,7 @@ void *get_item(htable *ht, char *key)
 
     llnode *node = bucket->head;
     while (node) {
-        if (!strncmp(key, *((htnode *)node)->key, HT_MAX_KEY_LEN))
+        if (!strncmp(key, ((htnode *)node)->key, HT_MAX_KEY_LEN))
             break;
         node = node->next;
     }
@@ -97,7 +97,7 @@ void del_item(htable *ht, char *key)
 
     llnode *node = bucket->head;
     while (node) {
-        if (!strncmp(key, *((htnode *)node)->key, HT_MAX_KEY_LEN))
+        if (!strncmp(key, ((htnode *)node)->key, HT_MAX_KEY_LEN))
             break;
         node = node->next;
     }
