@@ -8,7 +8,7 @@
 typedef struct htnode
 {
     llnode elem;
-    char *key;
+    char key[0];
 } htnode;
 
 typedef struct htable
