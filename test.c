@@ -47,13 +47,10 @@ int main(int argc, char *argv[])
 
     printf("Populating hashtable with 1000000 elements ...\n");
     for (i = 0; i < 1000000; ++i) {
-        printf("%i\n", i);
         char key[HT_MAX_KEY_LEN];
         snprintf(key, HT_MAX_KEY_LEN, "%i", i + 1);
         void *value = malloc(128);
-        printf("mark1\n", i);
         add_item(ht, key, value);
-        printf("mark2\n", i);
     }
 
     printf("Freeing hashtable ...\n");
