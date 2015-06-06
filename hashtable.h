@@ -13,8 +13,8 @@ typedef struct htnode
 
 typedef struct htable
 {
-    llist **keys;
     int buckets;
+    llist *keys[0];
 } htable;
 
 htable *get_htable(int buckets);
