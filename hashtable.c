@@ -5,12 +5,10 @@
 #include "hashtable.h"
 
 htable *get_htable(int buckets)
-{ 
-    htable *ht = malloc(sizeof(htable));
-    memset(ht, 0, 0);
-    int keys_size = buckets * sizeof(llist *);
-    ht->keys = malloc(keys_size);
-    memset(ht->keys, 0, keys_size);
+{
+    int htlen = sizeof(htable) + (sizeof(llist *) * buckets);
+    htable *ht = malloc(htlen);
+    memset(ht, 0, htlen);
     ht->buckets = buckets;
     return ht;
 }
@@ -18,10 +16,14 @@ htable *get_htable(int buckets)
 void free_htable(htable *ht)
 {
     int i = 0;
-    llist *bucket = ht->keys[0];
-    for (; i < ht->buckets; ++i, ++bucket)
-        free_llist(bucket);
-    free(ht->keys);
+    for (; i < ht->buckets; ++i) {
+        if (ht->keys[i]) {
+//            printf("Freeing %i ...\n", i);
+            free_llist(ht->keys[i]);
+        }
+        else
+//            printf("Not freeing %i ...\n", i);
+    }
     free(ht);
 }
 
