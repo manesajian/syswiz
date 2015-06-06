@@ -50,22 +50,18 @@ unsigned long hash_key(htable *ht, char *str)
 void add_item(htable *ht, char *key, void *value)
 {
     unsigned long hash = hash_key(ht, key);
-    printf("MarkA: %lu\n", hash);
 
     llist *bucket = ht->keys[hash];
     if (bucket == NULL)
         bucket = ht->keys[hash] = get_llist();
-    printf("MarkB\n");
 
-    htnode *node = malloc(sizeof(htnode) + strnlen(key, HT_MAX_KEY_LEN));
-    printf("MarkC\n");
+    int keylen = (int)strnlen(key, HT_MAX_KEY_LEN) + 1;
+
+    htnode *node = malloc(sizeof(htnode) + keylen);
     node->elem.data = value;
-    printf("MarkD\n");
 
-    strncpy(node->key, key, HT_MAX_KEY_LEN);
-    printf("MarkE\n");
-    node->key[HT_MAX_KEY_LEN - 1] = 0;
-    printf("MarkF\n");
+    strncpy(node->key, key, keylen - 1);
+    node->key[keylen - 1] = 0;
 
     add_llnode_head(bucket, (llnode *)node);
 }
