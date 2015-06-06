@@ -18,11 +18,8 @@ void free_htable(htable *ht)
     int i = 0;
     for (; i < ht->buckets; ++i) {
         if (ht->keys[i]) {
-//            printf("Freeing %i ...\n", i);
             free_llist(ht->keys[i]);
         }
-        else
-//            printf("Not freeing %i ...\n", i);
     }
     free(ht);
 }
