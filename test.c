@@ -43,10 +43,11 @@ int main(int argc, char *argv[])
     free_llist(ll);
 
     printf("Allocating hashtable ...\n");
-    htable *ht = get_htable(32768);
+    htable *ht = get_htable(65536);
 
-    printf("Populating hashtable with 1000000 elements ...\n");
-    for (i = 0; i < 1000000; ++i) {
+    int num_elems = 10000000;
+    printf("Populating hashtable with %i elements ...\n", num_elems);
+    for (i = 0; i < num_elems; ++i) {
         char key[HT_MAX_KEY_LEN];
         snprintf(key, HT_MAX_KEY_LEN, "%i", i + 1);
         void *value = malloc(128);
