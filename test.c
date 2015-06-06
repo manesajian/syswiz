@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     free_llist(ll);
 
     printf("Allocating hashtable ...\n");
-    htable *ht = get_htable(65536);
+    htable *ht = get_htable(32768);
 
     printf("Populating hashtable with 1000000 elements ...\n");
     for (i = 0; i < 1000000; ++i) {
