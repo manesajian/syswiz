@@ -1,5 +1,6 @@
 CC=gcc
-CFLAGS=-Wall
+CFLAGS=-Wall -g
+LDFLAGS=-g
 test: test.o hashtable.o linkedlist.o
 
 clean:
