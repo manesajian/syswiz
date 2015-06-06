@@ -25,11 +25,13 @@ void add_llnode(llist *ll, llnode *node)
     if (ll->tail) {
         ll->tail->next = node;
         node->prev = ll->tail;
+        node->next = NULL;
         ll->tail = node;
         ll->count += 1;
     }
     else {
         ll->head = ll->tail = node;
+        node->prev = node->next = NULL;
         ll->count += 1;
     }
 }
@@ -38,12 +40,14 @@ void add_llnode_head(llist *ll, llnode *node)
 {
     if (ll->head) {
         ll->head->prev = node;
+        node->prev = NULL;
         node->next = ll->head;
         ll->head = node;
         ll->count += 1;
     }
     else {
         ll->head = ll->tail = node;
+        node->prev = node->next = NULL;
         ll->count += 1;
     }
 }
@@ -59,6 +63,7 @@ void add_llnode_before(llist *ll, llnode *cur, llnode *new)
     }
     else {
         ll->head->prev = new;
+        new->prev = NULL;
         new->next = ll->head;
         ll->head = new;
         ll->count += 1;
@@ -77,6 +82,7 @@ void add_llnode_after(llist *ll, llnode *cur, llnode *new)
     else {
         ll->tail->next = new;
         new->prev = ll->tail;
+        new->next = NULL;
         ll->tail = new;
         ll->count += 1;
     }
@@ -156,6 +162,8 @@ void del_llnode(llist *ll, llnode *node)
 
     ll->count -= 1;
 
-    free(node->data);
+    if (node->data)
+        free(node->data);
+
     free(node);
 }
