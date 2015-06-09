@@ -208,6 +208,8 @@ struct output *format_stat(struct options *opt, struct stat *st)
                          (int)st->st_ctime);
 
     out->buf_len += bytes;
+
+    return out;
 }
 
 /*
