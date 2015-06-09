@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 
     while (ll->count) {
         printf("\tFreeing element val %i ...\n", ((test_st *)(ll->head))->val);
-        del_llnode(ll, ll->head);
+        free_llnode(ll, ll->head);
     }
 
     free_llist(ll);

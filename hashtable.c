@@ -98,5 +98,5 @@ void del_item(htable *ht, char *key)
     }
 
     if (node)
-        del_llnode(bucket, node);
+        free_llnode(bucket, node);
 }
