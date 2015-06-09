@@ -14,7 +14,7 @@ llist *get_llist()
 void free_llist(llist *ll)
 {
     while (ll->head) {
-        del_llnode(ll, ll->head);
+        free_llnode(ll, ll->head);
     }
 
     free(ll);
@@ -148,7 +148,17 @@ void move_llnode_down(llist *ll, llnode *node)
     above->prev = top;
 }
 
-void del_llnode(llist *ll, llnode *node)
+llnode *pop_llist_head(llist *ll)
+{
+    return pop_llist_node(ll, ll->head);
+}
+
+llnode *pop_llist_tail(llist *ll)
+{
+    return pop_llist_node(ll, ll->tail);
+}
+
+llnode *pop_llist_node(llist *ll, llnode *node)
 {
     if (node->prev)
         node->prev->next = node->next;
@@ -161,6 +171,13 @@ void del_llnode(llist *ll, llnode *node)
         ll->tail = node->prev;
 
     ll->count -= 1;
+
+    return node;
+}
+
+void free_llnode(llist *ll, llnode *node)
+{
+    pop_llist_node(ll, node);
 
     if (node->data)
         free(node->data);
