@@ -7,7 +7,7 @@
 llist *get_llist()
 { 
     llist *ll = malloc(sizeof(llist));
-    memset(ll, 0, 0);
+    memset(ll, 0, sizeof(llist));
     return ll;
 }
 
@@ -27,13 +27,13 @@ void add_llnode(llist *ll, llnode *node)
         node->prev = ll->tail;
         node->next = NULL;
         ll->tail = node;
-        ll->count += 1;
     }
     else {
         ll->head = ll->tail = node;
         node->prev = node->next = NULL;
-        ll->count += 1;
     }
+
+    ll->count += 1;
 }
 
 void add_llnode_head(llist *ll, llnode *node)
@@ -43,13 +43,13 @@ void add_llnode_head(llist *ll, llnode *node)
         node->prev = NULL;
         node->next = ll->head;
         ll->head = node;
-        ll->count += 1;
     }
     else {
         ll->head = ll->tail = node;
         node->prev = node->next = NULL;
-        ll->count += 1;
     }
+
+    ll->count += 1;
 }
 
 void add_llnode_tail(llist *ll, llnode *node)
@@ -64,15 +64,15 @@ void add_llnode_before(llist *ll, llnode *cur, llnode *new)
         new->prev = cur->prev;
         new->next = cur;
         cur->prev = new;
-        ll->count += 1;
     }
     else {
         ll->head->prev = new;
         new->prev = NULL;
         new->next = ll->head;
         ll->head = new;
-        ll->count += 1;
     }
+
+    ll->count += 1;
 }
 
 void add_llnode_after(llist *ll, llnode *cur, llnode *new)
@@ -82,15 +82,15 @@ void add_llnode_after(llist *ll, llnode *cur, llnode *new)
         new->next = cur->next;
         new->prev = cur;
         cur->next = new;
-        ll->count += 1;
     }
     else {
         ll->tail->next = new;
         new->prev = ll->tail;
         new->next = NULL;
         ll->tail = new;
-        ll->count += 1;
     }
+
+    ll->count += 1;
 }
 
 void move_llnode_up(llist *ll, llnode *node)
