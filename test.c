@@ -14,6 +14,19 @@ typedef struct test_st
     int val;
 } test_st;
 
+// comparison function for test_st linked list nodes
+int compare(llnode *left, llnode *right)
+{
+    test_st *l = (test_st *)left;
+    test_st *r = (test_st *)right;
+
+    if (l->val < r->val)
+        return -1;
+    if (l->val > r->val)
+        return 1;
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
     llist *ll = NULL;
@@ -73,29 +86,27 @@ int main(int argc, char *argv[])
     add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
     ((test_st *)(ll->tail))->val = 3;
 
+    ll->compare = &compare;
+
     printf("Sorting list with insertion sort ...\n");
 
     ll = insertion_sort(ll);
 
     printf("Verifying sort ...\n");
 
-    int sorted = 1;
+    ll->compare = &compare;
     llnode *cur = ll->head;
-    int val = ((test_st *)(ll->head))->val;
-    while (cur->next) {
-        cur = cur->next;
-
-        if (((test_st *)cur)->val > val) {
-            sorted = 0;
+    while (cur && cur->next) {
+        if (ll->compare(cur, cur->next) > 0) {
+            fprintf(stderr, "\tVerification failed.\n");
             break;
         }
+
+        cur = cur->next;
     }
 
-    if (sorted)
+    if (cur->next == NULL)
         printf("\tVerification successful.\n");
-    else {
-        fprintf(stderr, "\tVerification failed.\n");
-    }
 
     printf("Freeing list ...\n");
 
