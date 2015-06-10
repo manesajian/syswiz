@@ -16,6 +16,7 @@ typedef struct llist
     llnode *head;
     llnode *tail;
     int count;
+    int (*compare)(void *, void *);
 } llist;
 
 llist *get_llist();
