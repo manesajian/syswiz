@@ -1,6 +1,8 @@
 #include "insertionsort.h"
 
-/* TODO: need to pass in a compare function */
+/*
+ * This implementation is not a stable sort currently.
+ */
 
 llist *insertion_sort(llist *ll)
 {
@@ -12,17 +14,22 @@ llist *insertion_sort(llist *ll)
     while (ll->count > 0) {
         llnode *cur = pop_llist_head(ll);
 
+/* TODO: examine similar optimization to previous which decides which end
+   of the ordered list to start searching from (or possibly starts from the
+   middle). */
+
         llnode *tmp = sorted->head;
         while (tmp) {
-            //if (((compare)(tmp, cur)) <= 0) {
-            //    add_llnode_before(sorted, tmp, cur);
-            //    break;
-            //}
+            if (ll->compare(tmp, cur) >= 0) {
+                add_llnode_before(sorted, tmp, cur);
+                break;
+            }
 
             tmp = tmp->next;
         }
 
-        if (tmp)
+        // tmp will be NULL if end of sorted list was reached
+        if (!tmp)
             add_llnode_tail(ll, cur);
     }
 
