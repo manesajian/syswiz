@@ -4,6 +4,7 @@
 
 #include "hashtable.h"
 #include "linkedlist.h"
+#include "insertionsort.h"
 
 typedef struct test_st test_st;
 
@@ -56,6 +57,56 @@ int main(int argc, char *argv[])
 
     printf("Freeing hashtable ...\n");
     free_htable(ht); 
+
+    printf("Allocating list ...\n");
+    ll = malloc(sizeof(llist));
+    memset(ll, 0, 0);
+
+    printf("Initializing unsorted list ...\n");
+
+    add_llnode_tail(ll, (llnode *)malloc(sizeof(test_st)));
+    ((test_st *)(ll->tail))->val = 5;
+    add_llnode_tail(ll, (llnode *)malloc(sizeof(test_st)));
+    ((test_st *)(ll->tail))->val = 2;
+    add_llnode_tail(ll, (llnode *)malloc(sizeof(test_st)));
+    ((test_st *)(ll->tail))->val = 1;
+    add_llnode_tail(ll, (llnode *)malloc(sizeof(test_st)));
+    ((test_st *)(ll->tail))->val = 4;
+    add_llnode_tail(ll, (llnode *)malloc(sizeof(test_st)));
+    ((test_st *)(ll->tail))->val = 3;
+
+    printf("Sorting list with insertion sort ...\n");
+
+    ll = insertion_sort(ll);
+
+    printf("Verifying sort ...\n");
+
+    int sorted = 1;
+    llnode *cur = ll->head;
+    int val = ((test_st *)(ll->head))->val;
+    while (cur->next) {
+        cur = cur->next;
+
+        if (((test_st *)cur)->val > val) {
+            sorted = 0;
+            break;
+        }
+    }
+
+    if (sorted)
+        printf("\tVerification successful.\n");
+    else {
+        fprintf(stderr, "\tVerification failed.\n");
+    }
+
+    printf("Freeing list ...\n");
+
+    while (ll->count) {
+        printf("\tFreeing element val %i ...\n", ((test_st *)(ll->head))->val);
+        free_llnode(ll, ll->head);
+    }
+
+
 
     printf("Completed.\n");
 
