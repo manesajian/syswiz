@@ -52,6 +52,11 @@ void add_llnode_head(llist *ll, llnode *node)
     }
 }
 
+void add_llnode_tail(llist *ll, llnode *node)
+{
+    add_llnode(ll, node);
+}
+
 void add_llnode_before(llist *ll, llnode *cur, llnode *new)
 {
     if (cur->prev) {
