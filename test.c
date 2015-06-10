@@ -62,15 +62,15 @@ int main(int argc, char *argv[])
 
     printf("Initializing unsorted list ...\n");
 
-    add_llnode_tail(ll, (llnode *)malloc(sizeof(test_st)));
+    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
     ((test_st *)(ll->tail))->val = 5;
-    add_llnode_tail(ll, (llnode *)malloc(sizeof(test_st)));
+    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
     ((test_st *)(ll->tail))->val = 2;
-    add_llnode_tail(ll, (llnode *)malloc(sizeof(test_st)));
+    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
     ((test_st *)(ll->tail))->val = 1;
-    add_llnode_tail(ll, (llnode *)malloc(sizeof(test_st)));
+    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
     ((test_st *)(ll->tail))->val = 4;
-    add_llnode_tail(ll, (llnode *)malloc(sizeof(test_st)));
+    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
     ((test_st *)(ll->tail))->val = 3;
 
     printf("Sorting list with insertion sort ...\n");
