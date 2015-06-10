@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "insertionsort.h"
 
 /*
@@ -6,6 +8,10 @@
 
 llist *insertion_sort(llist *ll)
 {
+    // Can't sort without a compare function.
+    if (ll->compare == NULL)
+        return ll;
+
     llist *sorted = get_llist();
 
 /* TODO: examine optimization which looks at both ends of the list to decide
