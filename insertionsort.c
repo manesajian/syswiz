@@ -36,7 +36,7 @@ llist *insertion_sort(llist *ll)
 
         // tmp will be NULL if end of sorted list was reached
         if (!tmp)
-            add_llnode_tail(ll, cur);
+            add_llnode_tail(sorted, cur);
     }
 
     return sorted;
