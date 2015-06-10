@@ -17,12 +17,10 @@ typedef struct test_st
 int main(int argc, char *argv[])
 {
     llist *ll = NULL;
-    ll = malloc(sizeof(llist));
-    memset(ll, 0, 0);
 
     printf("Allocating list ...\n");
     ll = malloc(sizeof(llist));
-    memset(ll, 0, 0);
+    memset(ll, 0, sizeof(llist));
 
     printf("Initializing list ...\n");
 
@@ -46,7 +44,7 @@ int main(int argc, char *argv[])
     printf("Allocating hashtable ...\n");
     htable *ht = get_htable(65536);
 
-    int num_elems = 10000000;
+    int num_elems = 1000000;
     printf("Populating hashtable with %i elements ...\n", num_elems);
     for (i = 0; i < num_elems; ++i) {
         char key[HT_MAX_KEY_LEN];
@@ -60,7 +58,7 @@ int main(int argc, char *argv[])
 
     printf("Allocating list ...\n");
     ll = malloc(sizeof(llist));
-    memset(ll, 0, 0);
+    memset(ll, 0, sizeof(llist));
 
     printf("Initializing unsorted list ...\n");
 
@@ -105,8 +103,6 @@ int main(int argc, char *argv[])
         printf("\tFreeing element val %i ...\n", ((test_st *)(ll->head))->val);
         free_llnode(ll, ll->head);
     }
-
-
 
     printf("Completed.\n");
 
