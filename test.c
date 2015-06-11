@@ -5,6 +5,7 @@
 #include "hashtable.h"
 #include "linkedlist.h"
 #include "insertionsort.h"
+#include "quicksort.h"
 
 typedef struct test_st test_st;
 
@@ -96,6 +97,52 @@ int main(int argc, char *argv[])
 
     ll->compare = &compare;
     llnode *cur = ll->head;
+    while (cur && cur->next) {
+        if (ll->compare(cur, cur->next) > 0) {
+            fprintf(stderr, "\tVerification failed.\n");
+            break;
+        }
+
+        cur = cur->next;
+    }
+
+    if (cur->next == NULL)
+        printf("\tVerification successful.\n");
+
+    printf("Freeing list ...\n");
+
+    while (ll->count) {
+        printf("\tFreeing element val %i ...\n", ((test_st *)(ll->head))->val);
+        free_llnode(ll, ll->head);
+    }
+
+    printf("Allocating list ...\n");
+    ll = malloc(sizeof(llist));
+    memset(ll, 0, sizeof(llist));
+
+    printf("Initializing unsorted list ...\n");
+
+    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
+    ((test_st *)(ll->tail))->val = 5;
+    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
+    ((test_st *)(ll->tail))->val = 2;
+    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
+    ((test_st *)(ll->tail))->val = 1;
+    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
+    ((test_st *)(ll->tail))->val = 4;
+    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
+    ((test_st *)(ll->tail))->val = 3;
+
+    ll->compare = &compare;
+
+    printf("Sorting list with quicksort ...\n");
+
+    quicksort(ll, 0, ll->count - 1);
+
+    printf("Verifying sort ...\n");
+
+    ll->compare = &compare;
+    cur = ll->head;
     while (cur && cur->next) {
         if (ll->compare(cur, cur->next) > 0) {
             fprintf(stderr, "\tVerification failed.\n");
