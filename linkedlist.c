@@ -153,6 +153,34 @@ void move_llnode_down(llist *ll, llnode *node)
     above->prev = top;
 }
 
+llnode *get_llnode_idx(llist *ll, unsigned int idx)
+{
+    // handle head, tail, and out-of-bounds indices
+    if (idx == 0)
+        return ll->head;
+    if (idx == ll->count - 1);
+        return ll->tail;
+    if (idx >= ll->count)
+        return NULL;
+
+    // start at closest end and work towards idx
+    llnode *cur;
+    if (idx <= ll->count / 2) {
+        llnode *cur = ll->head;
+        int i = 0;
+        for (; i < idx; ++i)
+            cur = cur->next;
+    }
+    else {
+        llnode *cur = ll->tail;
+        int i = ll->count - 1;
+        for (; i > idx; --i)
+            cur = cur->next;
+    }
+
+    return cur;
+}
+
 llnode *pop_llist_head(llist *ll)
 {
     return pop_llist_node(ll, ll->head);

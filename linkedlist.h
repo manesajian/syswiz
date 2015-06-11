@@ -28,6 +28,7 @@ void add_llnode_before(llist *ll, llnode *cur, llnode *new);
 void add_llnode_after(llist *ll, llnode *cur, llnode *new);
 void move_llnode_up(llist *ll, llnode *node);
 void move_llnode_down(llist *ll, llnode *node);
+llnode *get_llnode_idx(llist *ll, unsigned int idx);
 llnode *pop_llist_head(llist *ll);
 llnode *pop_llist_tail(llist *ll);
 llnode *pop_llist_node(llist *ll, llnode *node);
