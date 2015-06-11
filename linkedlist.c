@@ -158,7 +158,7 @@ llnode *get_llnode_idx(llist *ll, unsigned int idx)
     // handle head, tail, and out-of-bounds indices
     if (idx == 0)
         return ll->head;
-    if (idx == ll->count - 1);
+    if (idx == ll->count - 1)
         return ll->tail;
     if (idx >= ll->count)
         return NULL;
@@ -166,16 +166,16 @@ llnode *get_llnode_idx(llist *ll, unsigned int idx)
     // start at closest end and work towards idx
     llnode *cur;
     if (idx <= ll->count / 2) {
-        llnode *cur = ll->head;
+        cur = ll->head;
         int i = 0;
         for (; i < idx; ++i)
             cur = cur->next;
     }
     else {
-        llnode *cur = ll->tail;
+        cur = ll->tail;
         int i = ll->count - 1;
         for (; i > idx; --i)
-            cur = cur->next;
+            cur = cur->prev;
     }
 
     return cur;
