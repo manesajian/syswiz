@@ -2,11 +2,15 @@
 
 #include "quicksort.h"
 
-llist *quick_sort(llist *ll, unsigned int lo, unsigned int hi)
+/*
+ * This implementation is an in-place non-stable sort currently.
+ */
+
+void quicksort(llist *ll, unsigned int lo, unsigned int hi)
 {
     // Verify there is a compare and do bounds checking
-    if (ll->compare == NULL || ((int)hi - lo) <= 1 || hi > ll->count)
-        return ll;
+    if (ll->compare == NULL || (int)(hi - lo) <= 1 || hi > ll->count)
+        return;
 
     int pivot_idx = lo + ((hi - lo) / 2);
     llnode *pivot = get_llnode_idx(ll, pivot_idx);
@@ -48,11 +52,11 @@ llist *quick_sort(llist *ll, unsigned int lo, unsigned int hi)
     }
 
     // Adjust pivot_idx to new value
-    pivot_idx += count_left - (pivot_idx - lo);
+    pivot_idx += (pivot_idx - lo) - count_left;
 
     // Sort sublist left of pivot
-    quick_sort_pivot(ll, pivot_idx - count_left, pivot_idx - 1);
+    quicksort(ll, pivot_idx - count_left, pivot_idx - 1);
 
     // Sort sublist right of pivot
-    quick_sort_pivot(ll, pivot_idx + 1, pivot_idx + count_right);
+    quicksort(ll, pivot_idx + 1, pivot_idx + count_right);
 }
