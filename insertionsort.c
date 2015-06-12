@@ -40,5 +40,8 @@ llist *insertion_sort(llist *ll)
             add_llnode_tail(sorted, cur);
     }
 
+    // Original list must be freed
+    free_llist(ll);
+
     return sorted;
 }
