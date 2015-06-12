@@ -3,6 +3,6 @@
 
 #include "linkedlist.h"
 
-void quicksort(llist *ll, unsigned int lo, unsigned int hi);
+llist *quicksort(llist *ll, unsigned int lo, unsigned int hi);
 
 #endif

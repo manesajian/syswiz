@@ -6,11 +6,11 @@
  * This implementation is an in-place non-stable sort currently.
  */
 
-void quicksort(llist *ll, unsigned int lo, unsigned int hi)
+llist *quicksort(llist *ll, unsigned int lo, unsigned int hi)
 {
     // Verify there is a compare and do bounds checking
     if (ll->compare == NULL || (int)(hi - lo) < 0 || hi > ll->count)
-        return;
+        return ll;
 
     int pivot_idx = lo + ((hi - lo) / 2);
     llnode *pivot = get_llnode_idx(ll, pivot_idx);
@@ -66,4 +66,6 @@ void quicksort(llist *ll, unsigned int lo, unsigned int hi)
     // Sort sublist right of pivot
     if (right_hi - right_lo > 0)
         quicksort(ll, pivot_idx + 1, pivot_idx + count_right);
+
+    return ll;
 }
