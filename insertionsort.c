@@ -13,6 +13,7 @@ llist *insertion_sort(llist *ll)
         return ll;
 
     llist *sorted = get_llist();
+    sorted->compare = ll->compare;
 
 /* TODO: examine optimization which looks at both ends of the list to decide
    which end to start from. I.e., detects direction of possible orderedness. */
