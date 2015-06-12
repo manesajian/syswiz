@@ -1,7 +1,9 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
 
 #include "hashtable.h"
 #include "linkedlist.h"
@@ -47,6 +49,88 @@ llist *generate_llist(int count)
     ll->compare = &compare;
 
     return ll;
+}
+
+int timeval_subtract(struct timeval *result, struct timeval *t2, struct timeval *t1)
+{
+    long int diff = (t2->tv_usec + 1000000 * t2->tv_sec) -
+                    (t1->tv_usec + 1000000 * t1->tv_sec);
+    result->tv_sec = diff / 1000000;
+    result->tv_usec = diff % 1000000;
+
+    return (diff < 0);
+}
+
+void timeval_print(struct timeval *tv)
+{
+    char buffer[30];
+    time_t curtime;
+
+    printf("%ld.%06ld", tv->tv_sec, tv->tv_usec);
+    curtime = tv->tv_sec;
+    strftime(buffer, 30, "%m-%d-%Y  %T", localtime(&curtime));
+    printf(" = %s.%06ld\n", buffer, tv->tv_usec);
+}
+
+# define tvcmp(a, b, CMP)                                                \
+  (((a).tv_sec == (b).tv_sec) ?                                          \
+   ((a).tv_usec CMP (b).tv_usec) :                                       \
+   ((a).tv_sec CMP (b).tv_sec))
+
+const int NUM_SORTS = 1;
+const int SIZE_SORT = 5;
+void test_sort(llist *(*sort)(llist *ll))
+{
+    struct timeval min_diff;
+    struct timeval max_diff;
+
+    int i;
+    for (i = 0; i < NUM_SORTS; ++i) {
+        printf("Creating list ...\n");
+        llist *ll = generate_llist(SIZE_SORT);
+
+        printf("Sorting list ...\n");
+
+        struct timeval start;
+        struct timeval stop;
+
+        gettimeofday(&start, NULL);
+        ll = sort(ll);
+        gettimeofday(&stop, NULL);
+
+        struct timeval diff;
+        timeval_subtract(&diff, &stop, &start);
+
+        if (i == 0)
+            max_diff = min_diff = diff;
+        else {
+            if (tvcmp(diff, min_diff, <))
+                min_diff = diff;
+            if (tvcmp(diff, max_diff, >))
+                max_diff = diff;
+        }
+
+        printf("Verifying sort ...\n");
+        llnode *cur = ll->head;
+        while (cur && cur->next) {
+            if (ll->compare(cur, cur->next) > 0) {
+                fprintf(stderr, "\tVerification failed.\n");
+                break;
+            }
+
+            cur = cur->next;
+        }
+        if (cur->next == NULL)
+            printf("\tVerification successful.\n");
+
+        printf("Min run: %ld.%06ld, Max run: %ld.%06ld\n", min_diff.tv_sec,
+                                                           min_diff.tv_usec,
+                                                           max_diff.tv_sec,
+                                                           max_diff.tv_usec);
+
+        printf("Freeing list ...\n");
+        free_llist(ll);
+    }
 }
 
 int main(int argc, char *argv[])
