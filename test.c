@@ -77,19 +77,20 @@ void timeval_print(struct timeval *tv)
    ((a).tv_usec CMP (b).tv_usec) :                                       \
    ((a).tv_sec CMP (b).tv_sec))
 
-const int NUM_SORTS = 1;
-const int SIZE_SORT = 5;
+const int NUM_SORTS = 3;
+const int SIZE_SORT = 10000;
 void test_sort(llist *(*sort)(llist *ll))
 {
     struct timeval min_diff;
     struct timeval max_diff;
 
+    printf("Performing %i sort(s) of %i elements ...\n", NUM_SORTS, SIZE_SORT);
+
     int i;
     for (i = 0; i < NUM_SORTS; ++i) {
-        printf("Creating list ...\n");
-        llist *ll = generate_llist(SIZE_SORT);
+        printf("\tStarting sort %i\n", i + 1);
 
-        printf("Sorting list ...\n");
+        llist *ll = generate_llist(SIZE_SORT);
 
         struct timeval start;
         struct timeval stop;
@@ -110,27 +111,25 @@ void test_sort(llist *(*sort)(llist *ll))
                 max_diff = diff;
         }
 
-        printf("Verifying sort ...\n");
         llnode *cur = ll->head;
         while (cur && cur->next) {
             if (ll->compare(cur, cur->next) > 0) {
-                fprintf(stderr, "\tVerification failed.\n");
+                fprintf(stderr, "\t\tSort verification failed.\n");
                 break;
             }
 
             cur = cur->next;
         }
         if (cur->next == NULL)
-            printf("\tVerification successful.\n");
+            printf("\t\tSort verification successful.\n");
 
-        printf("Min run: %ld.%06ld, Max run: %ld.%06ld\n", min_diff.tv_sec,
-                                                           min_diff.tv_usec,
-                                                           max_diff.tv_sec,
-                                                           max_diff.tv_usec);
-
-        printf("Freeing list ...\n");
         free_llist(ll);
     }
+
+    printf("Min run: %ld.%06ld, Max run: %ld.%06ld\n", min_diff.tv_sec,
+                                                       min_diff.tv_usec,
+                                                       max_diff.tv_sec,
+                                                       max_diff.tv_usec);
 }
 
 int main(int argc, char *argv[])
@@ -165,6 +164,10 @@ int main(int argc, char *argv[])
     printf("Freeing hashtable ...\n");
     free_htable(ht); 
 
+
+    test_sort(&insertion_sort);
+
+/*
     printf("Creating list ...\n");
     ll = generate_llist(5);
 
@@ -193,7 +196,7 @@ int main(int argc, char *argv[])
         printf("\tFreeing element val %i ...\n", ((test_st *)(ll->head))->val);
         free_llnode(ll, ll->head);
     }
-
+*/
     printf("Creating list ...\n");
     ll = generate_llist(5);
 
@@ -203,7 +206,7 @@ int main(int argc, char *argv[])
 
     printf("Verifying sort ...\n");
 
-    cur = ll->head;
+    llnode *cur = ll->head;
     while (cur && cur->next) {
         if (ll->compare(cur, cur->next) > 0) {
             fprintf(stderr, "\tVerification failed.\n");
