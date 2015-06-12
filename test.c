@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "hashtable.h"
 #include "linkedlist.h"
 #include "insertionsort.h"
 #include "quicksort.h"
+
 
 typedef struct test_st test_st;
 
@@ -28,23 +30,31 @@ int compare(llnode *left, llnode *right)
     return 0;
 }
 
+// linked list generation function to produce unsorted list
+llist *generate_llist(int count)
+{
+    srand(time(NULL));
+
+    llist *ll = get_llist();
+
+    int i;
+    for (i = 0; i < count; ++i) {
+        test_st *node = calloc(sizeof(test_st), 1);
+        node->val = rand() % 1000;
+        add_llnode(ll, (llnode *)node);
+    }
+
+    ll->compare = &compare;
+
+    return ll;
+}
+
 int main(int argc, char *argv[])
 {
     llist *ll = NULL;
 
-    printf("Allocating list ...\n");
-    ll = malloc(sizeof(llist));
-    memset(ll, 0, sizeof(llist));
-
-    printf("Initializing list ...\n");
-
-    int i;
-    for (i = 0; i < 5; ++i) {
-        test_st *node = malloc(sizeof(test_st));
-        node->val = i;
-        printf("\tAdding element val %i ...\n", node->val);
-        add_llnode(ll, (llnode *)node);
-    }
+    printf("Creating list ...\n");
+    ll = generate_llist(5);
 
     printf("Freeing list ...\n");
 
@@ -58,6 +68,7 @@ int main(int argc, char *argv[])
     printf("Allocating hashtable ...\n");
     htable *ht = get_htable(65536);
 
+    int i;
     int num_elems = 1000000;
     printf("Populating hashtable with %i elements ...\n", num_elems);
     for (i = 0; i < num_elems; ++i) {
@@ -70,24 +81,8 @@ int main(int argc, char *argv[])
     printf("Freeing hashtable ...\n");
     free_htable(ht); 
 
-    printf("Allocating list ...\n");
-    ll = malloc(sizeof(llist));
-    memset(ll, 0, sizeof(llist));
-
-    printf("Initializing unsorted list ...\n");
-
-    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
-    ((test_st *)(ll->tail))->val = 5;
-    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
-    ((test_st *)(ll->tail))->val = 2;
-    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
-    ((test_st *)(ll->tail))->val = 1;
-    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
-    ((test_st *)(ll->tail))->val = 4;
-    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
-    ((test_st *)(ll->tail))->val = 3;
-
-    ll->compare = &compare;
+    printf("Creating list ...\n");
+    ll = generate_llist(5);
 
     printf("Sorting list with insertion sort ...\n");
 
@@ -95,7 +90,6 @@ int main(int argc, char *argv[])
 
     printf("Verifying sort ...\n");
 
-    ll->compare = &compare;
     llnode *cur = ll->head;
     while (cur && cur->next) {
         if (ll->compare(cur, cur->next) > 0) {
@@ -116,24 +110,8 @@ int main(int argc, char *argv[])
         free_llnode(ll, ll->head);
     }
 
-    printf("Allocating list ...\n");
-    ll = malloc(sizeof(llist));
-    memset(ll, 0, sizeof(llist));
-
-    printf("Initializing unsorted list ...\n");
-
-    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
-    ((test_st *)(ll->tail))->val = 5;
-    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
-    ((test_st *)(ll->tail))->val = 2;
-    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
-    ((test_st *)(ll->tail))->val = 1;
-    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
-    ((test_st *)(ll->tail))->val = 4;
-    add_llnode_tail(ll, (llnode *)calloc(sizeof(test_st), 1));
-    ((test_st *)(ll->tail))->val = 3;
-
-    ll->compare = &compare;
+    printf("Creating list ...\n");
+    ll = generate_llist(5);
 
     printf("Sorting list with quicksort ...\n");
 
@@ -141,7 +119,6 @@ int main(int argc, char *argv[])
 
     printf("Verifying sort ...\n");
 
-    ll->compare = &compare;
     cur = ll->head;
     while (cur && cur->next) {
         if (ll->compare(cur, cur->next) > 0) {
