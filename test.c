@@ -132,6 +132,11 @@ void test_sort(llist *(*sort)(llist *ll))
                                                        max_diff.tv_usec);
 }
 
+llist *quicksort_wrapper(llist *ll)
+{
+    return quicksort(ll, 0, ll->count - 1);
+}
+
 int main(int argc, char *argv[])
 {
     llist *ll = NULL;
@@ -142,7 +147,6 @@ int main(int argc, char *argv[])
     printf("Freeing list ...\n");
 
     while (ll->count) {
-        printf("\tFreeing element val %i ...\n", ((test_st *)(ll->head))->val);
         free_llnode(ll, ll->head);
     }
 
@@ -167,64 +171,7 @@ int main(int argc, char *argv[])
 
     test_sort(&insertion_sort);
 
-/*
-    printf("Creating list ...\n");
-    ll = generate_llist(5);
-
-    printf("Sorting list with insertion sort ...\n");
-
-    ll = insertion_sort(ll);
-
-    printf("Verifying sort ...\n");
-
-    llnode *cur = ll->head;
-    while (cur && cur->next) {
-        if (ll->compare(cur, cur->next) > 0) {
-            fprintf(stderr, "\tVerification failed.\n");
-            break;
-        }
-
-        cur = cur->next;
-    }
-
-    if (cur->next == NULL)
-        printf("\tVerification successful.\n");
-
-    printf("Freeing list ...\n");
-
-    while (ll->count) {
-        printf("\tFreeing element val %i ...\n", ((test_st *)(ll->head))->val);
-        free_llnode(ll, ll->head);
-    }
-*/
-    printf("Creating list ...\n");
-    ll = generate_llist(5);
-
-    printf("Sorting list with quicksort ...\n");
-
-    quicksort(ll, 0, ll->count - 1);
-
-    printf("Verifying sort ...\n");
-
-    llnode *cur = ll->head;
-    while (cur && cur->next) {
-        if (ll->compare(cur, cur->next) > 0) {
-            fprintf(stderr, "\tVerification failed.\n");
-            break;
-        }
-
-        cur = cur->next;
-    }
-
-    if (cur->next == NULL)
-        printf("\tVerification successful.\n");
-
-    printf("Freeing list ...\n");
-
-    while (ll->count) {
-        printf("\tFreeing element val %i ...\n", ((test_st *)(ll->head))->val);
-        free_llnode(ll, ll->head);
-    }
+    test_sort(&quicksort_wrapper);
 
     printf("Completed.\n");
 
