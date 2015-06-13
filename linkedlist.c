@@ -153,6 +153,24 @@ void move_llnode_down(llist *ll, llnode *node)
     above->prev = top;
 }
 
+void swap_llnodes(llist *ll, llnode *node1, llnode *node2)
+{
+    llnode *above_node1 = node1->prev;
+    llnode *below_node1 = node1->next;
+    llnode *above_node2 = node2->prev;
+    llnode *below_node2 = node2->next;
+
+    if (node1->prev == NULL)
+        ll->head = node2;
+    if (node2->next == NULL)
+        ll->tail = node1;
+
+    node1->prev = above_node2;
+    node1->next = below_node2;
+    node2->prev = above_node1;
+    node2->next = below_node1;
+}
+
 llnode *get_llnode_idx(llist *ll, unsigned int idx)
 {
     // handle head, tail, and out-of-bounds indices
