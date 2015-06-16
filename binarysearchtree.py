@@ -22,21 +22,6 @@ class BinarySearchTree(BinaryTree):
                 for elem in self.root.rightChild:
                     yield elem
 
-    def __next__(self):
-        returnObj = self.__next
-
-        if returnObj is None:
-                raise StopIteration
-
-        if returnObj.leftChild:
-            self.__next = returnObj.leftChild
-        elif returnObj.rightChild:
-            self.__next = returnObj.rightChild
-        else:
-            self.__next = None
-
-        return returnObj
-
     def insert_node(self, node):
         pass
 
