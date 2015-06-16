@@ -13,14 +13,13 @@ class BinarySearchTree(BinaryTree):
         BinaryTree.__init__(self)
 
     def __iter__(self):
-        self.__node = self.root
-        if self.__node:
-            if self.__node.leftChild:
-                for elem in self.__node.leftChild:
+        if self.root:
+            if self.root.leftChild:
+                for elem in self.root.leftChild:
                     yield elem
-            yield self.__node.key
-            if self.__node.rightChild()
-                for elem in self.__node.rightChild:
+            yield self.root.key
+            if self.root.rightChild:
+                for elem in self.root.rightChild:
                     yield elem
 
     def __next__(self):
