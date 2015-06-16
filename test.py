@@ -10,4 +10,8 @@ for i in lst:
 for i in bst.root:
     print(i)
 
+bst.delete(5)
+
+for i in bst.root:
+    print(i)
 
