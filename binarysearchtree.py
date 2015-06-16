@@ -80,7 +80,9 @@ class BinarySearchTree(BinaryTree):
         elif key > currentNode.key:
             return self._find(key, currentNode.rightNode)
         else:
-            return currentNode.value
+            return currentNode
+
+        return None
 
     def __delitem__(self, key):
         self.delete(key)
@@ -101,31 +103,31 @@ class BinarySearchTree(BinaryTree):
     def _delete(self, node):
         # handle 'neither', 'left', 'right', and 'both' children cases
         if node.leftChild is None and node.rightChild is None:
-            if currentNode is node.parent.leftChild:
-                currentNode.parent.leftChild = None
+            if node is node.parent.leftChild:
+                node.parent.leftChild = None
             else:
-                currentNode.parent.rightChild = None
+                node.parent.rightChild = None
         elif node.leftChild and node.rightChild is None:
             if node.parent is None:
                 self.root = node.leftChild
-            elif currentNode is node.parent.leftChild:
-                currentNode.parent.leftChild = node.leftChild
+            elif node is node.parent.leftChild:
+                node.parent.leftChild = node.leftChild
             else:
-                currentNode.parent.rightChild = node.leftChild
-            node.leftChild.parent = currentNode.parent
+                node.parent.rightChild = node.leftChild
+            node.leftChild.parent = node.parent
         elif node.rightChild and node.leftChild is None:
             if node.parent is None:
                 self.root = node.rightChild
-            elif currentNode is node.parent.leftChild:
-                currentNode.parent.leftChild = node.rightChild
+            elif node is node.parent.leftChild:
+                node.parent.leftChild = node.rightChild
             else:
-                currentNode.parent.rightChild = node.rightChild
-            node.rightChild.parent = currentNode.parent
+                node.parent.rightChild = node.rightChild
+            node.rightChild.parent = node.parent
         else:
             successor = node.find_successor()
             self._delete(successor)
-            currentNode.key = successor.key
-            currentNode.value = successor.value
+            node.key = successor.key
+            node.value = successor.value
 
         self.count -= 1
 
