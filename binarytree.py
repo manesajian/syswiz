@@ -5,7 +5,7 @@ class TreeNode():
 class BinaryTree():
     def __init__(self):
         self.root = None
-        self.__count = 0
+        self.count = 0
 
     def __len__(self):
         return self.__count
