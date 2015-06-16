@@ -42,16 +42,6 @@ class BinarySearchTree(BinaryTree):
     def __init__(self):
         BinaryTree.__init__(self)
 
-#    def __iter__(self):
-#        if self.root:
-#            if self.root.leftChild:
-#                for elem in self.root.leftChild:
-#                    yield elem
-#            yield self.root.key
-#            if self.root.rightChild:
-#                for elem in self.root.rightChild:
-#                    yield elem
-
     def insert(self, key, value = None):
         node = BSTNode(key, value)
         if self.root:
