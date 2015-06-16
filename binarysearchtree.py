@@ -23,10 +23,25 @@ class BinarySearchTree(BinaryTree):
                     yield elem
 
     def insert(self, node):
-        pass
+        if self.root:
+            self._insert(node, self.root)
+        else:
+            self.root = node
+        self.count += 1
 
-    def _insert(self, key, node, currentNode):
-        pass
+    def _insert(self, node, currentNode):
+        if node.key < currentNode.key:
+            if currentNode.leftChild:
+                self._insert(node, currentNode.leftChild)
+            else:
+                node.parent = current
+                current.leftChild = node
+        else:
+            if currentNode.rightChild:
+                self._insert(node, currentNode.rightChild)
+            else:
+                node.parent = current
+                current.rightChild = node
 
     def find(self, node):
         pass
