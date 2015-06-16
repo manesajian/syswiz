@@ -1,16 +1,11 @@
 class TreeNode():
     def __init__(self):
-        self.prev = None
-        self.next = None
+        self.parent = None
 
 class BinaryTree():
     def __init__(self):
-        self.head = None
-        self.tail = None
+        self.root = None
         self.__count = 0
-
-        # llist can iterate circularly
-        self.circular = circular
 
     def __len__(self):
         return self.__count
