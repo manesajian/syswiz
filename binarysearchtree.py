@@ -1,10 +1,11 @@
 from binarytree import TreeNode, BinaryTree
 
 class BSTNode(TreeNode):
-    def __init__(self, key):
+    def __init__(self, key, value = None):
         TreeNode.__init__(self)
 
         self.key = key
+        self.value = value
         self.leftChild = None
         self.rightChild = None
 
@@ -36,15 +37,33 @@ class BinarySearchTree(BinaryTree):
             else:
                 node.parent = current
                 current.leftChild = node
-        else:
+        elif node.key > currentNode.key:
             if currentNode.rightChild:
                 self._insert(node, currentNode.rightChild)
             else:
                 node.parent = current
                 current.rightChild = node
+        else:
+            currentNode.value = node.value
 
-    def find(self, node):
+    def find(self, key):
+        if self.root:
+            found = self._find(key, self.root)
+            if found:
+                return found.value
+        return None
+
+    def _find(self, key, currentNode):
+        if currentNode is None:
+            return None
+
+        if key < currentNode.key:
+            return self._find(key, currentNode.leftNode)
+        elif key > currentNode.key:
+            return self._find(key, currentNode.rightNode)
+        else:
+            return currentNode.value
+
+    def delete(self, key):
         pass
 
-    def delete(self, node):
-        pass
