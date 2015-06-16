@@ -22,11 +22,14 @@ class BinarySearchTree(BinaryTree):
                 for elem in self.root.rightChild:
                     yield elem
 
-    def insert_node(self, node):
+    def insert(self, node):
         pass
 
-    def find_node(self, node):
+    def _insert(self, key, node, currentNode):
         pass
 
-    def delete_node(self, node):
+    def find(self, node):
+        pass
+
+    def delete(self, node):
         pass
