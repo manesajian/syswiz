@@ -38,6 +38,12 @@ class BSTNode(TreeNode):
             current = current.leftChild
         return current
 
+    def find_max(self):
+        current = self
+        while current.rightChild:
+            current = current.rightChild
+        return current
+
 class BinarySearchTree(BinaryTree):
     def __init__(self):
         BinaryTree.__init__(self)
