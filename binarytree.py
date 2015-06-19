@@ -1,6 +1,8 @@
 class TreeNode():
     def __init__(self):
         self.parent = None
+        self.leftChild = None
+        self.rightChild = None
 
 class BinaryTree():
     def __init__(self):
@@ -9,6 +11,11 @@ class BinaryTree():
 
     def __len__(self):
         return self.__count
+
+    def height(node):
+        if node == None:
+            return 0
+        return max(height(node.leftChild), height(node.rightChild)) + 1
 
     def depth_first_traversal():
         pass
