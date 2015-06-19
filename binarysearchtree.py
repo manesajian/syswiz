@@ -6,8 +6,6 @@ class BSTNode(TreeNode):
 
         self.key = key
         self.value = value
-        self.leftChild = None
-        self.rightChild = None
 
     def __iter__(self):
         if self.leftChild:
