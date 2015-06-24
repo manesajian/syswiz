@@ -62,10 +62,27 @@ class AVLTree(BinarySearchTree):
             else:
                 self._rotateRight(node)
 
-    def _rotateRight(self, node):
-        pass
- 
     def _rotateLeft(self, node):
+        newRoot = node.rightChild
+        node.rightChild = newRoot.leftChild
+        if newRoot.leftChild != None:
+            newRoot.leftChild.parent = node
+        newRoot.parent = node.parent
+        if node.parent == None:
+            self.root = newRoot
+        else:
+            if node == node.parent.leftChild:
+                node.parent.leftChild = newRoot
+            else:
+                node.parent.rightChild = newRoot
+        newRoot.leftChild = node
+        node.parent = newRoot
+        node.balanceFactor = node.balanceFactor +
+                             1 - min(newRoot.balanceFactor, 0)
+        newRoot.balanceFactor = newRoot.balanceFactor +
+                                1 + max(node.balanceFactor, 0)
+ 
+    def _rotateRight(self, node):
         pass
  
     def __delitem__(self, key):
