@@ -23,14 +23,19 @@ class AVLTree(BinarySearchTree):
             else:
                 node.parent = currentNode
                 currentNode.leftChild = node
+                self._balance(node)
         elif node.key > currentNode.key:
             if currentNode.rightChild:
                 self._insert(node, currentNode.rightChild)
             else:
                 node.parent = currentNode
                 currentNode.rightChild = node
+                self._balance(node)
         else:
             currentNode.value = node.value
+
+    def _balance(self, node):
+        pass
 
     def __delitem__(self, key):
         self.delete(key)
