@@ -49,6 +49,23 @@ class AVLTree(BinarySearchTree):
                 self._balance(node.parent)
 
     def _rebalance(self, node):
+        if node.balanceFactor < 0:
+            if node.rightChild.balanceFactor > 0:
+                self._rotateRight(node.rightChild)
+                self._rotateLeft(node)
+            else:
+                self._rotateLeft(node)
+        elif node.balanceFactor > 0:
+            if node.leftChild.balanceFactor < 0:
+                self._rotateLeft(node.leftChild)
+                self._rotateRight(node)
+            else:
+                self._rotateRight(node)
+
+    def _rotateRight(self, node):
+        pass
+ 
+    def _rotateLeft(self, node):
         pass
  
     def __delitem__(self, key):
