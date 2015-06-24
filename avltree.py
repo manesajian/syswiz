@@ -35,8 +35,22 @@ class AVLTree(BinarySearchTree):
             currentNode.value = node.value
 
     def _balance(self, node):
-        pass
+        if node.balanceFactor > 1 or node.balanceFactor < -1:
+            self._rebalance(node)
+            return
 
+        if node.parent != None:
+            if node == node.parent.leftChild:
+                node.parent.balanceFactor += 1
+            else:
+                node.parent.balanceFactor -= 1
+
+            if node.parent.balanceFactor != 0:
+                self._balance(node.parent)
+
+    def _rebalance(self, node):
+        pass
+ 
     def __delitem__(self, key):
         self.delete(key)
 
