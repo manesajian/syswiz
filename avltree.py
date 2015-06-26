@@ -1,4 +1,4 @@
-from binarytree import TreeNode, BinaryTree
+from binarysearchtree import BSTNode, BinarySearchTree
 
 class AVLNode(BSTNode):
     def __init__(self, key, value = None):
