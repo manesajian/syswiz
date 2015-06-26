@@ -10,7 +10,7 @@ class BinaryTree():
         self.count = 0
 
     def __len__(self):
-        return self.__count
+        return self.count
 
     def height(node):
         if node == None:
