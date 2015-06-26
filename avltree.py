@@ -77,9 +77,9 @@ class AVLTree(BinarySearchTree):
                 node.parent.rightChild = newRoot
         newRoot.leftChild = node
         node.parent = newRoot
-        node.balanceFactor = node.balanceFactor +
+        node.balanceFactor = node.balanceFactor + \
                              1 - min(newRoot.balanceFactor, 0)
-        newRoot.balanceFactor = newRoot.balanceFactor +
+        newRoot.balanceFactor = newRoot.balanceFactor + \
                                 1 + max(node.balanceFactor, 0)
  
     def _rotateRight(self, node):
@@ -97,9 +97,9 @@ class AVLTree(BinarySearchTree):
                 node.parent.leftChild = newRoot
         newRoot.rightChild = node
         node.parent = newRoot
-        node.balanceFactor = node.balanceFactor +
+        node.balanceFactor = node.balanceFactor + \
                              1 + max(newRoot.balanceFactor, 0)
-        newRoot.balanceFactor = newRoot.balanceFactor +
+        newRoot.balanceFactor = newRoot.balanceFactor + \
                                 1 - min(node.balanceFactor, 0)
  
     def __delitem__(self, key):
