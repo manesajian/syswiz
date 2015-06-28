@@ -5,6 +5,7 @@ from avltree import AVLTree
 
 class TestBinarySearchTree(unittest.TestCase):
     def setUp(self):
+        print('setUp!')
         self.bst = BinarySearchTree()
 
     def test_insert(self):
@@ -23,6 +24,7 @@ class TestBinarySearchTree(unittest.TestCase):
             self.assertTrue(i == lst[i])
 
     def tearDown(self):
+        print('tearDown!')
         pass
 
 if __name__ == '__main__':
