@@ -111,6 +111,7 @@ class BinarySearchTree(BinaryTree):
                 node.parent.leftChild = None
             else:
                 node.parent.rightChild = None
+            self.count -= 1
         elif node.leftChild and node.rightChild is None:
             if node.parent is None:
                 self.root = node.leftChild
@@ -119,6 +120,7 @@ class BinarySearchTree(BinaryTree):
             else:
                 node.parent.rightChild = node.leftChild
             node.leftChild.parent = node.parent
+            self.count -= 1
         elif node.rightChild and node.leftChild is None:
             if node.parent is None:
                 self.root = node.rightChild
@@ -127,12 +129,9 @@ class BinarySearchTree(BinaryTree):
             else:
                 node.parent.rightChild = node.rightChild
             node.rightChild.parent = node.parent
+            self.count -= 1
         else:
             successor = node.find_successor()
             self._delete(successor)
             node.key = successor.key
             node.value = successor.value
-
-        self.count -= 1
-
-
