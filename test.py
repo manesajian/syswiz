@@ -3,6 +3,10 @@ import unittest
 from binarysearchtree import BinarySearchTree
 from avltree import AVLTree
 
+def log(msg):
+    with open('test.output', 'a') as f:
+        f.write('\n' + msg)
+
 class TestBinarySearchTree(unittest.TestCase):
     def setUp(self):
         self.bst = None
