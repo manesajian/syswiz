@@ -3,6 +3,7 @@ from binarysearchtree import BSTNode, BinarySearchTree
 class AVLNode(BSTNode):
     def __init__(self, key, value = None):
         BSTNode.__init__(self, key, value)
+        self.balanceFactor = 0
 
 class AVLTree(BinarySearchTree):
     def __init__(self):
@@ -125,6 +126,7 @@ class AVLTree(BinarySearchTree):
                 node.parent.leftChild = None
             else:
                 node.parent.rightChild = None
+            self.count -= 1
         elif node.leftChild and node.rightChild is None:
             if node.parent is None:
                 self.root = node.leftChild
@@ -133,6 +135,7 @@ class AVLTree(BinarySearchTree):
             else:
                 node.parent.rightChild = node.leftChild
             node.leftChild.parent = node.parent
+            self.count -= 1
         elif node.rightChild and node.leftChild is None:
             if node.parent is None:
                 self.root = node.rightChild
@@ -141,12 +144,9 @@ class AVLTree(BinarySearchTree):
             else:
                 node.parent.rightChild = node.rightChild
             node.rightChild.parent = node.parent
+            self.count -= 1
         else:
             successor = node.find_successor()
             self._delete(successor)
             node.key = successor.key
             node.value = successor.value
-
-        self.count -= 1
-
-
