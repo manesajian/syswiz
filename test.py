@@ -37,7 +37,7 @@ class TestBinarySearchTree(unittest.TestCase):
     def tearDown(self):
         self._cleanup()
 
-class AVLTree(unittest.TestCase):
+class TestAVLTree(unittest.TestCase):
     def setUp(self):
         self.avl = None
 
