@@ -2,14 +2,14 @@ from binarysearchtree import BSTNode, BinarySearchTree
 
 class AVLNode(BSTNode):
     def __init__(self, key, value = None):
-        BSTNode.__init__(self)
+        BSTNode.__init__(self, key, value)
 
 class AVLTree(BinarySearchTree):
     def __init__(self):
         BinarySearchTree.__init__(self)
 
     def insert(self, key, value = None):
-        node = BSTNode(key, value)
+        node = AVLNode(key, value)
         if self.root:
             self._insert(node, self.root)
         else:
