@@ -124,16 +124,20 @@ class AVLTree(BinarySearchTree):
         if node.leftChild is None and node.rightChild is None:
             if node is node.parent.leftChild:
                 node.parent.leftChild = None
+                self._balance(node.parent)
             else:
                 node.parent.rightChild = None
+                self._balance(node.parent)
             self.count -= 1
         elif node.leftChild and node.rightChild is None:
             if node.parent is None:
                 self.root = node.leftChild
             elif node is node.parent.leftChild:
                 node.parent.leftChild = node.leftChild
+                self._balance(node.parent)
             else:
                 node.parent.rightChild = node.leftChild
+                self._balance(node.parent)
             node.leftChild.parent = node.parent
             self.count -= 1
         elif node.rightChild and node.leftChild is None:
@@ -141,8 +145,10 @@ class AVLTree(BinarySearchTree):
                 self.root = node.rightChild
             elif node is node.parent.leftChild:
                 node.parent.leftChild = node.rightChild
+                self._balance(node.parent)
             else:
                 node.parent.rightChild = node.rightChild
+                self._balance(node.parent)
             node.rightChild.parent = node.parent
             self.count -= 1
         else:
