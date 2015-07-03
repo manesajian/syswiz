@@ -13,11 +13,11 @@ def log(msg):
 def _print_tree(node, is_left, offset, depth, s):
     if node == None: return 0
 
-    width = 6
+    width = 3
     left  = _print_tree(node.leftChild, 1, offset, depth + 1, s)
     right = _print_tree(node.rightChild, 0, offset + left + width, depth + 1, s)
 
-    b = '({:3s})'.format(str(node.value)).ljust(20)
+    b = '({:s})'.format(str(node.value)).ljust(20)
 
     row = list(s[depth])
     for i in range(width):
