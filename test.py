@@ -94,6 +94,10 @@ class TestAVLTree(unittest.TestCase):
         for i in lst:
             self.avl.insert(i)
 
+        # verify length and that root node is 5
+        self.assertEqual(len(self.avl), 10)
+        self.assertEqual(self.avl.root.value, 5)
+
     def _cleanup(self):
         if self.avl:
             del(self.avl)
@@ -101,20 +105,27 @@ class TestAVLTree(unittest.TestCase):
 
     def test_insert(self):
         self._initialize()
-        self.assertEqual(len(self.avl), 10)
+        self._cleanup()
 
     def test_delete(self):
         self._initialize()
-        print_tree(self.avl)
+
         self.avl.delete(5)
-        print_tree(self.avl)
+
+        # length should be 9 and root should be 6 (instead of 5)
         self.assertEqual(len(self.avl), 9)
+        self.assertEqual(self.avl.root.value, 6)
+
+        self._cleanup()
 
     def test_iteration(self):
         self._initialize()
+
         lst = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         for i in self.avl.root:
             self.assertTrue(i == lst[i])
+
+        self._cleanup()
 
     def tearDown(self):
         self._cleanup()
