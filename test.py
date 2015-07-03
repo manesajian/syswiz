@@ -105,6 +105,7 @@ class TestAVLTree(unittest.TestCase):
 
     def test_delete(self):
         self._initialize()
+        print_tree(self.avl)
         self.avl.delete(5)
         print_tree(self.avl)
         self.assertEqual(len(self.avl), 9)
