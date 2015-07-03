@@ -19,26 +19,21 @@ def _print_tree(node, is_left, offset, depth, s):
 
     b = '({:3s})'.format(str(node.value)).ljust(20)
 
-    suffix = s[depth][offset + left + width : ]
-    s[depth] = s[depth][ : offset + left - 1] + b[ : width] + suffix
+    row = list(s[depth])
+    for i in range(width):
+        row[offset + left + i] = b[i];
+    s[depth] = ''.join(row)
 
-    if depth and is_left:
-#        prefix = s[depth - 1][ : offset + left + (width // 2) - 1]
-#        suffix = '-'*(width + right)
-#        row = prefix + '.' + suffix
-
-        row = s[depth - 1]
-        row = row[ : offset + left + (width // 2) - 1] + '-'*(width+right)
-        s[depth - 1] = row[ : offset + left + (width // 2) - 1] + '.' + \
-                       row[offset + left + (width // 2) + 1 : ]
-    elif depth and not is_left:
-        row = s[depth - 1][ : offset - (width // 2) - 1] + '-'*(left+width)
-        s[depth - 1] = row[ : offset + left + (width // 2) - 1] + '.' + \
-                       row[offset + left + (width // 2) + 1 : ]
-
-#        prefix = s[depth - 1][ : offset - (width // 2) - 1]
-#        suffix = '-'*(left + width)
-#        s[depth - 1] = prefix + suffix + '.'
+    row = list(s[depth - 1])
+    if (depth and is_left):
+        for i in range(width + right):
+            row[offset + left + (width // 2) + i] = '-';
+        row[offset + left + (width // 2)] = '.';
+    elif (depth and not is_left):
+        for i in range(left + width):
+            row[offset - (width // 2) + i] = '-';
+        row[offset + left + (width // 2)] = '.';
+    s[depth - 1] = ''.join(row)
 
     return left + width + right
 
@@ -53,58 +48,6 @@ def print_tree(bt):
     for line in s:
         if len(line.strip()) > 0:
             log(line)
-
-def print_tree2(bt):
-    log('Tree count: {0}, tree height: {1}'.format(len(bt), bt.height()))
-
-    # start with root
-    q = deque()
-    q.append(bt.root)
-
-    # limit display height
-    height = min(7, bt.height())
-
-    # characters required for base row
-    width = 2**height
-
-    log('width: {0}'.format(width))
-
-    log(' '*(width // 2) + 'O')
-    for i in range(0, height):
-        edges = ' '*(height-i)
-        level = ' '*(height-i)
-        newq = deque()
-        while len(q) > 0:
-            node = q.popleft()
-
-            if node.leftChild:
-                edges += '/ '
-                level += 'O '
-                newq.append(node.leftChild)
-            else:
-                edges += '  '
-                level += '  '
-             
-            if node.rightChild:
-                edges += '\\ '
-                level += 'O '
-                newq.append(node.rightChild)
-            else:
-                edges += '  '
-                level += '  '
-
-            edges += ' '*(i+1)
-            level += ' '*(i+1)
-
-        # pad beginning of line with spaces
-        if len(edges) < width:
-            edges = ' '*((width-len(edges)) // 2) + edges
-        if len(level) < width:
-            level = ' '*((width-len(level)) // 2) + level
-
-        log(edges)
-        log(level)
-        q = newq
 
 class TestBinarySearchTree(unittest.TestCase):
     def setUp(self):
