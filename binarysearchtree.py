@@ -7,6 +7,9 @@ class BSTNode(TreeNode):
         self.key = key
         self.value = value
 
+        if self.value == None:
+            self.value = self.key
+
     def __iter__(self):
         if self.leftChild:
             for elem in self.leftChild:
