@@ -133,17 +133,17 @@ class TestAVLTree(unittest.TestCase):
 
 class TestBloomFilter(unittest.TestCase):
     def setUp(self):
-        self.bf = None
         self.size = 500000
         self.hash_count = 7
 
-    def _initialize(self):
-        self._cleanup()
         self.bf = BloomFilter(self.size, self.hash_count)
         with open('/usr/share/dict/american-english') as f:
             lines = f.read().splitlines()
             for line in lines:
                 self.bf.add(line)
+
+    def _initialize(self):
+        pass
 
     def _cleanup(self):
         if self.bf:
@@ -151,13 +151,12 @@ class TestBloomFilter(unittest.TestCase):
             self.bf = None
 
     def test_lookup_yes(self):
-        self._initialize()
         self.assertEqual(self.bf.lookup('mice'), True)
-        self._cleanup()
 
     def test_lookup_no(self):
-        self._initialize()
         self.assertEqual(self.bf.lookup('3'), False)
+
+    def tearDown(self):
         self._cleanup()
 
 if __name__ == '__main__':
