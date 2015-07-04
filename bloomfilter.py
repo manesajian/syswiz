@@ -54,18 +54,16 @@ class BloomFilter:
         self.size = size
         self.hash_count = hash_count
         self.bit_array = 1 << size
-#        self.bit_array.setall(0)
 
     def add(self, string):
         for seed in range(self.hash_count):
             result = murmur3_x86_32(string, seed) % self.size
-            self.bit_array &= result
-#[result] = 1
+            self.bit_array |= 1 << result
 
     def lookup(self, string):
         for seed in range(self.hash_count):
             result = murmur3_x86_32(string, seed) % self.size
-            if self.bit_array & result == 0:
+            if self.bit_array & (1 << result) == 0:
                 return False
         return True
 
