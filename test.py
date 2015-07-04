@@ -137,10 +137,9 @@ class TestBloomFilter(unittest.TestCase):
         self.hash_count = 7
 
         self.bf = BloomFilter(self.size, self.hash_count)
-        with open('/usr/share/dict/american-english') as f:
-            lines = f.read().splitlines()
-            for line in lines:
-                self.bf.add(line)
+        lst = ['abc', 'xyz', 'foo', 'bar']
+        for item in lst:
+            self.bf.add(item)
 
     def _initialize(self):
         pass
@@ -151,10 +150,10 @@ class TestBloomFilter(unittest.TestCase):
             self.bf = None
 
     def test_lookup_yes(self):
-        self.assertEqual(self.bf.lookup('mice'), True)
+        self.assertEqual(self.bf.lookup('foo'), True)
 
     def test_lookup_no(self):
-        self.assertEqual(self.bf.lookup('3'), False)
+        self.assertEqual(self.bf.lookup('hello'), False)
 
     def tearDown(self):
         self._cleanup()
