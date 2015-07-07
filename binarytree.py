@@ -1,12 +1,18 @@
-class TreeNode():
+from tree import TreeNode, Tree
+
+class BinaryTreeNode(TreeNode):
     def __init__(self):
+        TreeNode.__init__(self)
+
         self.parent = None
         self.leftChild = None
         self.rightChild = None
         self.value = None
 
-class BinaryTree():
+class BinaryTree(Tree):
     def __init__(self):
+        Tree.__init__(self)
+
         self.root = None
         self.count = 0
 
