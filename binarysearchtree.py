@@ -1,8 +1,8 @@
-from binarytree import TreeNode, BinaryTree
+from binarytree import BinaryTreeNode, BinaryTree
 
-class BSTNode(TreeNode):
+class BSTNode(BinaryTreeNode):
     def __init__(self, key, value = None):
-        TreeNode.__init__(self)
+        BinaryTreeNode.__init__(self)
 
         self.key = key
         self.value = value
