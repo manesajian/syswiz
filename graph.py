@@ -20,6 +20,11 @@ def breadth_first_search_paths(self, graph, start, target):
             else:
                 queue.append((next, path + [next]))
 
+# need to implement Graph.__get__ or whatever to support [] keying
+#  should return generator? anyways, something iterable "for next in graph[v]"
+#  maybe it returns a set?
+#  anyways, need to figure out how support "- set(path)" syntax above
+
 class GraphNode():
     def __init__(self):
         self.value = None
