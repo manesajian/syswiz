@@ -24,8 +24,10 @@ def breadth_first_search_paths(self, graph, start, target):
 # for neighbor in graph[vertex]
 
 class GraphNode():
-    def __init__(self):
-        self.value = None
+    def __init__(self, key, value = None, neighbors = None):
+        self.key = key
+        self.value = value
+        self.neighbors = neighbors
 
 class Graph():
     def __init__(self):
@@ -36,22 +38,25 @@ class Graph():
         return self.count
 
     def __iter__(self):
-        self.next = self.nodes.items()
+        return self.nodes.items()
 
-        return self
+    def __getitem__(self, key):
+        return self.nodes[key]
 
-    def __next__(self):
-        elem = self.next
+    def __setitem__(self, node, neighbors):
+        if node.key in self.nodes:
+            del(node)
 
-        if self.next:
-            self.next = self.next.next
-        else:
-            raise StopIteration
+        self.nodes[node.key] = node
 
-        return elem
+        for neighbor in node
 
-    def __getitem__(self, val):
-        return None
-
-    def __setitem__(self, key, value):
         return
+
+    def __delitem__(self, key):
+        if key not in self.nodes:
+            raise KeyError('{0} not found.'.format(key))
+            for neighbor in self.nodes[node.key]:
+
+
+
